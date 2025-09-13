@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, ArrowLeft, HelpCircle, MessageCircle, Mail, Bug } from 'lucide-react';
 
 interface FAQItem {
@@ -10,66 +11,67 @@ interface FAQItem {
 }
 
 const FAQPage: React.FC = () => {
+  const { t } = useTranslation();
   const [openItems, setOpenItems] = useState<number[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const faqData: FAQItem[] = [
     {
       id: 1,
-      question: "Làm thế nào để xem phim trên PhimTộc?",
-      answer: "Bạn có thể xem phim bằng cách: 1) Tìm kiếm phim qua thanh tìm kiếm, 2) Duyệt theo danh mục, 3) Click vào phim để xem chi tiết, 4) Nhấn nút 'Xem phim ngay' để bắt đầu xem.",
+      question: t('faq1q'),
+      answer: t('faq1a'),
       category: "general"
     },
     {
       id: 2,
-      question: "PhimTộc có miễn phí không?",
-      answer: "Có, PhimTộc hoàn toàn miễn phí. Bạn có thể xem tất cả các phim mà không cần trả phí hay đăng ký tài khoản.",
+      question: t('faq2q'),
+      answer: t('faq2a'),
       category: "general"
     },
     {
       id: 3,
-      question: "Tại sao video không phát được?",
-      answer: "Video có thể không phát do: 1) Kết nối internet chậm, 2) Trình duyệt cũ, 3) Phim chưa có nguồn phát. Hãy thử refresh trang hoặc chọn phim khác.",
+      question: t('faq3q'),
+      answer: t('faq3a'),
       category: "technical"
     },
     {
       id: 4,
-      question: "Làm sao để thêm phim vào danh sách yêu thích?",
-      answer: "Để thêm phim vào danh sách yêu thích: 1) Đăng nhập tài khoản, 2) Vào trang chi tiết phim, 3) Nhấn nút trái tim để thêm vào yêu thích.",
+      question: t('faq4q'),
+      answer: t('faq4a'),
       category: "account"
     },
     {
       id: 5,
-      question: "Có thể xem phim trên điện thoại không?",
-      answer: "Có, PhimTộc hỗ trợ xem phim trên mọi thiết bị bao gồm điện thoại, tablet, máy tính. Giao diện sẽ tự động điều chỉnh cho phù hợp với màn hình.",
+      question: t('faq5q'),
+      answer: t('faq5a'),
       category: "technical"
     },
     {
       id: 6,
-      question: "Làm thế nào để báo lỗi hoặc góp ý?",
-      answer: "Bạn có thể báo lỗi hoặc góp ý qua Facebook của chúng tôi tại: https://www.facebook.com/phimtocc/ hoặc liên hệ trực tiếp qua trang Facebook.",
+      question: t('faq6q'),
+      answer: t('faq6a'),
       category: "support"
     },
     {
       id: 7,
-      question: "PhimTộc có cập nhật phim mới không?",
-      answer: "Có, chúng tôi thường xuyên cập nhật phim mới. Bạn có thể xem thông báo phim mới ở góc trên bên phải của trang web.",
+      question: t('faq7q'),
+      answer: t('faq7a'),
       category: "general"
     },
     {
       id: 8,
-      question: "Tại sao tôi không thể đăng nhập?",
-      answer: "Vấn đề đăng nhập có thể do: 1) Sai email/mật khẩu, 2) Tài khoản chưa được kích hoạt, 3) Lỗi kết nối. Hãy thử reset mật khẩu hoặc liên hệ hỗ trợ.",
+      question: t('faq8q'),
+      answer: t('faq8a'),
       category: "account"
     }
   ];
 
   const categories = [
-    { id: 'all', name: 'Tất cả', icon: HelpCircle },
-    { id: 'general', name: 'Chung', icon: MessageCircle },
-    { id: 'technical', name: 'Kỹ thuật', icon: Bug },
-    { id: 'account', name: 'Tài khoản', icon: Mail },
-    { id: 'support', name: 'Hỗ trợ', icon: HelpCircle }
+    { id: 'all', name: t('allCategories'), icon: HelpCircle },
+    { id: 'general', name: t('general'), icon: MessageCircle },
+    { id: 'technical', name: t('technical'), icon: Bug },
+    { id: 'account', name: t('account'), icon: Mail },
+    { id: 'support', name: t('supportCategory'), icon: HelpCircle }
   ];
 
   const filteredFAQs = selectedCategory === 'all' 
@@ -94,14 +96,14 @@ const FAQPage: React.FC = () => {
             className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors duration-300 mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Về trang chủ
+            {t('back')}
           </Link>
           
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-            Câu hỏi thường gặp
+            {t('frequentlyAskedQuestions')}
           </h1>
           <p className="text-gray-400 text-lg">
-            Tìm câu trả lời cho các thắc mắc phổ biến về PhimTộc
+            {t('faqSubtitle')}
           </p>
         </div>
 
@@ -160,10 +162,10 @@ const FAQPage: React.FC = () => {
         <div className="mt-12 text-center">
           <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-8 border border-blue-500/30">
             <h3 className="text-xl font-semibold text-white mb-4">
-              Không tìm thấy câu trả lời?
+              {t('cantFindAnswer')}
             </h3>
             <p className="text-gray-400 mb-6">
-              Liên hệ với chúng tôi qua Facebook để được hỗ trợ trực tiếp
+              {t('contactFacebook')}
             </p>
             <a
               href="https://www.facebook.com/phimtocc/"
@@ -172,7 +174,7 @@ const FAQPage: React.FC = () => {
               className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-300"
             >
               <MessageCircle className="w-5 h-5 mr-2" />
-              Liên hệ Facebook
+              {t('contactFacebookButton')}
             </a>
           </div>
         </div>

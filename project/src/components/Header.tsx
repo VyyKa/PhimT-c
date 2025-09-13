@@ -67,8 +67,8 @@ const Header: React.FC = () => {
           const newNotifications: Notification[] = allMovies.slice(0, 5).map((movie: any, index: number) => ({
             id: `movie-${movie.slug || movie._id}`,
             type: 'movie_update' as const,
-            title: 'Phim mới cập nhật',
-            message: `${movie.name} đã có sẵn để xem`,
+            title: t('newMovieAdded'),
+            message: `${movie.name} ${t('newMovieAdded')}`,
             movieId: movie.slug || movie._id,
             timestamp: new Date(movie.modified?.time || Date.now()),
             read: false
@@ -78,7 +78,7 @@ const Header: React.FC = () => {
           const systemNotification: Notification = {
             id: 'system-update',
             type: 'system',
-            title: 'Hệ thống',
+            title: t('systemNotification'),
             message: 'Website đã được cập nhật với nhiều tính năng mới',
             timestamp: new Date(),
             read: false
