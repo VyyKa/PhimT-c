@@ -1,4 +1,12 @@
 {
+  "name": "phimtoc-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd project && npm run build",
+    "dev": "cd project && npm run dev",
+    "install-deps": "cd project && npm install"
+  },
   "devDependencies": {
     "terser": "^5.44.0"
   }
