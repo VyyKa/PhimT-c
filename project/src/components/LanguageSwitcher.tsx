@@ -23,7 +23,7 @@ const LanguageSwitcher: React.FC = () => {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors p-2"
+        className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors p-2 rounded-xl hover:bg-white/5"
       >
         <Globe className="w-4 h-4" />
         <span className="text-sm">{currentLanguage.flag}</span>
@@ -36,15 +36,15 @@ const LanguageSwitcher: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full right-0 mt-2 bg-black/95 backdrop-blur-md border border-gray-700 rounded-lg shadow-xl min-w-[150px] z-50"
+            className="absolute top-full right-0 mt-2 bg-black/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-xl min-w-[150px] z-50"
           >
             <div className="py-2">
               {languages.map((language) => (
                 <button
                   key={language.code}
                   onClick={() => handleLanguageChange(language.code)}
-                  className={`w-full flex items-center space-x-3 px-4 py-2 hover:bg-gray-800 transition-colors text-left ${
-                    i18n.language === language.code ? 'bg-gray-800' : ''
+                  className={`w-full flex items-center space-x-3 px-4 py-2 hover:bg-purple-500/10 transition-colors text-left ${
+                    i18n.language === language.code ? 'bg-purple-500/20' : ''
                   }`}
                 >
                   <span className="text-lg">{language.flag}</span>

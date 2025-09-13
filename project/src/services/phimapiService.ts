@@ -1,3 +1,81 @@
+// PhimAPI service - https://phimapi.com (public API)
+
+export interface PhimApiItem {
+  _id?: string;
+  name: string;
+  slug: string;
+  origin_name?: string;
+  poster_url?: string;
+  thumb_url?: string;
+  year?: number | string;
+  category?: Array<{ id?: string; name?: string; slug?: string }>;
+  country?: Array<{ id?: string; name?: string; slug?: string }>;
+}
+
+export interface PhimApiListResponse {
+  items?: PhimApiItem[]; // v2/v3 style
+  data?: { items?: PhimApiItem[]; params?: any; titlePage?: string };
+  totalItems?: number;
+  totalPages?: number;
+  page?: number;
+}
+
+const BASE = 'https://phimapi.com';
+
+export function toWebpImage(sourceUrl: string | undefined | null): string | undefined {
+  if (!sourceUrl) return undefined;
+  // Ensure absolute URL if API returns relative path
+  const absolute = sourceUrl.startsWith('http') ? sourceUrl : `${BASE}${sourceUrl}`;
+  return `${BASE}/image.php?url=${encodeURIComponent(absolute)}`;
+}
+
+async function httpGet<T>(url: string): Promise<T> {
+  const res = await fetch(url, { headers: { Accept: 'application/json' } });
+  if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+// Search movies by keyword (v1)
+export async function searchMovies(keyword: string, page = 1, limit = 12): Promise<PhimApiItem[]> {
+  const url = `${BASE}/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`;
+  const data = (await httpGet<PhimApiListResponse>(url)) as PhimApiListResponse;
+  const items = data?.data?.items || data?.items || [];
+  return items as PhimApiItem[];
+}
+
+// Latest movies (v2/v3 give richer structures). Fallback to v1 list.
+export async function getLatest(page = 1): Promise<PhimApiItem[]> {
+  try {
+    const data = await httpGet<PhimApiListResponse>(`${BASE}/danh-sach/phim-moi-cap-nhat-v3?page=${page}`);
+    return (data?.data?.items || data?.items || []) as PhimApiItem[];
+  } catch {
+    const data = await httpGet<PhimApiListResponse>(`${BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`);
+    return (data?.data?.items || data?.items || []) as PhimApiItem[];
+  }
+}
+
+// Get movie detail by slug
+export async function getMovieDetail(slug: string): Promise<any> {
+  return httpGet<any>(`${BASE}/phim/${slug}`);
+}
+
+// Convenience: Get Conan related movies via search
+export async function getConanMovies(limit = 12): Promise<PhimApiItem[]> {
+  // Keyword variants to improve hit rate
+  const keywords = ['Conan', 'Detective Conan', 'Thám Tử Lừng Danh Conan'];
+  for (const kw of keywords) {
+    try {
+      const items = await searchMovies(kw, 1, limit);
+      if (items && items.length) return items;
+    } catch {
+      // try next
+    }
+  }
+  return [];
+}
+
+export type { PhimApiItem as ApiMovie };
+
 // PhimAPI service wrapper
 
 export interface PhimApiListParams {

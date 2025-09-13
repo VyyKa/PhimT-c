@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Movie } from '../types';
 import MovieCard from './MovieCard';
 
@@ -17,6 +18,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
   const [showRightArrow, setShowRightArrow] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const scroll = (direction: 'left' | 'right') => {
     const container = containerRef.current;
@@ -50,6 +52,23 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
     }
   };
 
+  const handleViewAll = () => {
+    // Map title to appropriate browse category
+    let category = '';
+    if (title.includes('Phim lẻ') || title.includes('topRated')) {
+      category = 'phim-le';
+    } else if (title.includes('Phim bộ') || title.includes('trendingNow')) {
+      category = 'phim-bo';
+    } else if (title.includes('Anime')) {
+      category = 'hoat-hinh';
+    } else if (title.includes('TV Shows')) {
+      category = 'tv-shows';
+    }
+    
+    // Navigate to browse page with category filter
+    navigate(`/browse${category ? `?category=${category}` : ''}`);
+  };
+
   if (movies.length === 0) return null;
 
   return (
@@ -79,13 +98,14 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="text-sm text-gray-400 hover:text-purple-400 transition-colors font-medium"
+          onClick={handleViewAll}
+          className="text-sm text-gray-400 hover:text-purple-400 transition-colors font-medium cursor-pointer"
         >
           {t('viewAll')} →
         </motion.button>
       </motion.div>
       
-      <div className="relative group px-12">
+      <div className="relative group px-4 md:px-12">
         {/* Left Arrow */}
         <AnimatePresence>
           {showLeftArrow && (
@@ -96,9 +116,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('left')}
-              className="absolute -left-6 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
+              className="absolute -left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
             >
-              <ChevronLeft className="w-6 h-6" />
+              <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
           )}
         </AnimatePresence>
@@ -113,9 +133,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('right')}
-              className="absolute -right-6 top-1/2 transform -translate-y-1/2 z-30 w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
+              className="absolute -right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
             >
-              <ChevronRight className="w-6 h-6" />
+              <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
             </motion.button>
           )}
         </AnimatePresence>
@@ -124,7 +144,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         <div
           ref={containerRef}
           onScroll={handleScroll}
-          className="flex space-x-4 md:space-x-6 overflow-x-auto scroll-smooth hide-scrollbar scroll-snap-x pb-4 px-2"
+          className="flex space-x-3 md:space-x-4 lg:space-x-6 overflow-x-auto scroll-smooth hide-scrollbar scroll-snap-x pb-4 px-1 md:px-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {movies.map((movie, index) => (

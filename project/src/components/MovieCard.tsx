@@ -87,15 +87,15 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
   };
 
   const sizeClasses = {
-    small: 'w-32 md:w-40',
-    medium: 'w-40 md:w-48',
-    large: 'w-48 md:w-64'
+    small: 'w-28 sm:w-32 md:w-40',
+    medium: 'w-36 sm:w-40 md:w-48',
+    large: 'w-44 sm:w-48 md:w-64'
   };
 
   const heightClasses = {
-    small: 'h-48 md:h-60',
-    medium: 'h-60 md:h-72',
-    large: 'h-72 md:h-96'
+    small: 'h-42 sm:h-48 md:h-60',
+    medium: 'h-54 sm:h-60 md:h-72',
+    large: 'h-66 sm:h-72 md:h-96'
   };
 
   return (
@@ -130,9 +130,9 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
           
           {/* Rating Badge */}
-          <div className="absolute top-3 left-3 z-20">
-            <div className="flex items-center space-x-1 px-2 py-1 glass-morphism rounded-lg">
-              <Star className="w-3 h-3 text-yellow-400 fill-current" />
+          <div className="absolute top-2 left-2 md:top-3 md:left-3 z-20">
+            <div className="flex items-center space-x-1 px-1.5 md:px-2 py-0.5 md:py-1 glass-morphism rounded-lg">
+              <Star className="w-2.5 h-2.5 md:w-3 md:h-3 text-yellow-400 fill-current" />
               <span className="text-white text-xs font-semibold">
                 {movie.imdbRating || 'N/A'}
               </span>
@@ -144,13 +144,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleFavoriteClick}
-            className={`absolute top-3 right-3 z-20 p-2 rounded-xl transition-all duration-300 ${
+            className={`absolute top-2 right-2 md:top-3 md:right-3 z-20 p-1.5 md:p-2 rounded-xl transition-all duration-300 ${
               isFavorite 
                 ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-lg' 
                 : 'glass-morphism text-gray-300 hover:text-white'
             }`}
           >
-            <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+            <Heart className={`w-3 h-3 md:w-4 md:h-4 ${isFavorite ? 'fill-current' : ''}`} />
           </motion.button>
           
           {/* Hover Overlay - Khít với poster */}
@@ -165,18 +165,18 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
               >
                 {/* Top Section - Quick Info */}
                 <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-2 text-xs text-gray-300">
-                    <Calendar className="w-3 h-3" />
+                  <div className="flex items-center space-x-1 md:space-x-2 text-xs text-gray-300">
+                    <Calendar className="w-2.5 h-2.5 md:w-3 md:h-3" />
                     <span>{movie.year}</span>
                     <span>•</span>
-                    <Clock className="w-3 h-3" />
+                    <Clock className="w-2.5 h-2.5 md:w-3 md:h-3" />
                     <span>{movie.duration}</span>
                   </div>
                 </div>
 
                 {/* Center Section - Title & Info */}
-                <div className="flex-1 flex flex-col justify-center space-y-3">
-                  <h3 className="text-white font-bold text-sm md:text-base leading-tight line-clamp-2">
+                <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-3">
+                  <h3 className="text-white font-bold text-xs sm:text-sm md:text-base leading-tight line-clamp-2">
                     {movie.title}
                   </h3>
 
@@ -185,7 +185,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                     {movie.genre.slice(0, 2).map((genre, index) => (
                       <span 
                         key={index} 
-                        className="text-xs bg-gradient-to-r from-blue-600/30 to-purple-600/30 text-blue-200 px-2 py-1 rounded-full border border-purple-400/20 backdrop-blur-sm"
+                        className="text-xs bg-gradient-to-r from-blue-600/30 to-purple-600/30 text-blue-200 px-1.5 md:px-2 py-0.5 md:py-1 rounded-full border border-purple-400/20 backdrop-blur-sm"
                       >
                         {genre}
                       </span>
@@ -193,33 +193,33 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                   </div>
 
                   {/* Description Preview */}
-                  <p className="text-gray-300 text-xs leading-relaxed line-clamp-2">
+                  <p className="text-gray-300 text-xs leading-relaxed line-clamp-2 hidden sm:block">
                     {movie.description}
                   </p>
                 </div>
 
                 {/* Bottom Section - Action Buttons */}
                 <div className="flex items-center justify-between pt-2">
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1.5 md:space-x-2">
                     {/* Play Button */}
                     <motion.button 
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handlePlayClick}
-                      className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-white to-gray-100 text-black rounded-xl hover:from-gray-100 hover:to-white transition-all duration-200 shadow-lg group"
+                      className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-white to-gray-100 text-black rounded-xl hover:from-gray-100 hover:to-white transition-all duration-200 shadow-lg group"
                       title="Phát ngay"
                     >
-                      <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                      <Play className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform" />
                     </motion.button>
 
                     {/* Add to List Button */}
                     <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      className="flex items-center justify-center w-10 h-10 glass-morphism text-white rounded-xl hover:bg-white/10 transition-all duration-200 group"
+                      className="flex items-center justify-center w-8 h-8 md:w-10 md:h-10 glass-morphism text-white rounded-xl hover:bg-white/10 transition-all duration-200 group"
                       title="Thêm vào danh sách"
                     >
-                      <Plus className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                      <Plus className="w-3 h-3 md:w-4 md:h-4 group-hover:scale-110 transition-transform" />
                     </motion.button>
                   </div>
 
@@ -227,12 +227,12 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center space-x-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 py-2 rounded-xl text-xs font-medium transition-all duration-200 shadow-lg group relative"
+                    className="flex items-center space-x-1 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-2 md:px-3 py-1.5 md:py-2 rounded-xl text-xs font-medium transition-all duration-200 shadow-lg group relative"
                   >
-                    <Info className="w-3 h-3 group-hover:scale-110 transition-transform" />
-                    <span className="hidden sm:inline">{t('info')}</span>
+                    <Info className="w-2.5 h-2.5 md:w-3 md:h-3 group-hover:scale-110 transition-transform" />
+                    <span className="hidden md:inline">{t('info')}</span>
                     {/* Auto-trailer indicator */}
-                    <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <div className="absolute -top-1 -right-1 w-1.5 h-1.5 md:w-2 md:h-2 bg-red-500 rounded-full animate-pulse"></div>
                   </motion.button>
                 </div>
               </motion.div>

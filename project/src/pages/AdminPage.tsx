@@ -1,13 +1,74 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Users, Film, BarChart3 } from 'lucide-react';
-import { movieData } from '../data/movies';
 import { Movie } from '../types';
+import { phimapiService } from '../services/phimapiService';
 import toast from 'react-hot-toast';
 
 const AdminPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'dashboard' | 'movies' | 'users'>('dashboard');
-  const [movies, setMovies] = useState<Movie[]>(movieData);
+  const [movies, setMovies] = useState<Movie[]>([]);
   const [isAddingMovie, setIsAddingMovie] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch movies from API
+  useEffect(() => {
+    let cancelled = false;
+    
+    (async () => {
+      try {
+        setLoading(true);
+        
+        // Get recent movies from different categories
+        const [phimLe, phimBo, hoatHinh, tvShows] = await Promise.all([
+          phimapiService.getList('phim-le', { page: 1, limit: 10, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('phim-bo', { page: 1, limit: 10, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('hoat-hinh', { page: 1, limit: 10, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('tv-shows', { page: 1, limit: 10, sort_field: 'modified.time', sort_type: 'desc' })
+        ]);
+        
+        if (!cancelled) {
+          // Combine all movies
+          const allMovies = [
+            ...(phimLe.data?.items || []),
+            ...(phimBo.data?.items || []),
+            ...(hoatHinh.data?.items || []),
+            ...(tvShows.data?.items || [])
+          ];
+          
+          // Map to Movie format
+          const mappedMovies: Movie[] = allMovies.map((item: any) => ({
+            id: item.slug || item._id,
+            title: item.name,
+            description: '',
+            image: phimapiService.formatImage(item.poster_url || item.thumb_url),
+            backdropImage: phimapiService.formatImage(item.thumb_url || item.poster_url),
+            year: String(item.year || ''),
+            rating: '',
+            duration: item.time || '',
+            genre: (item.category || []).map((c: any) => c?.name || '').filter(Boolean),
+            videoUrl: '',
+            category: (item.category && item.category[0]?.name) || 'Khác',
+            imdbRating: item.tmdb?.vote_average ? String(item.tmdb.vote_average) : undefined
+          }));
+          
+          setMovies(mappedMovies);
+        }
+      } catch (error) {
+        console.error('Failed to fetch movies:', error);
+        if (!cancelled) {
+          setMovies([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+    
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleDeleteMovie = (id: string) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa phim này?')) {
@@ -38,7 +99,7 @@ const AdminPage: React.FC = () => {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`flex items-center space-x-2 px-4 py-2 rounded transition-colors ${
                     activeTab === tab.id
-                      ? 'bg-red-600 text-white'
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white'
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
                 >
@@ -59,7 +120,7 @@ const AdminPage: React.FC = () => {
                       <p className="text-gray-400 text-sm">Tổng số phim</p>
                       <p className="text-3xl font-bold text-white">{movies.length}</p>
                     </div>
-                    <Film className="w-8 h-8 text-red-600" />
+                    <Film className="w-8 h-8 text-purple-500" />
                   </div>
                 </div>
 
@@ -129,12 +190,18 @@ const AdminPage: React.FC = () => {
                 <h2 className="text-2xl font-bold">Quản lý phim</h2>
                 <button
                   onClick={() => setIsAddingMovie(true)}
-                  className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors"
+                  className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg transition-all duration-300 shadow-lg"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Thêm phim mới</span>
                 </button>
               </div>
+
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="text-gray-400">Đang tải danh sách phim...</div>
+                </div>
+              ) : (
 
               <div className="bg-gray-900 rounded-lg overflow-hidden">
                 <div className="overflow-x-auto">
@@ -198,7 +265,7 @@ const AdminPage: React.FC = () => {
                               </button>
                               <button
                                 onClick={() => handleDeleteMovie(movie.id)}
-                                className="text-red-400 hover:text-red-300"
+                                className="text-purple-400 hover:text-purple-300"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -210,6 +277,7 @@ const AdminPage: React.FC = () => {
                   </table>
                 </div>
               </div>
+              )}
             </div>
           )}
 

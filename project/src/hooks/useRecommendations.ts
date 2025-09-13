@@ -1,86 +1,90 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Movie } from '../types';
-import { movieData } from '../data/movies';
-// Removed TasteDive integration
+import { phimapiService } from '../services/phimapiService';
 
 export function useRecommendations(
   favoriteMovies: string[],
   watchHistory: string[],
   currentMovieId?: string
 ): Movie[] {
-  const [tasteDiveRecommendations, setTasteDiveRecommendations] = useState<never[]>([]);
+  const [recommendations, setRecommendations] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Get user's favorite movies for TasteDive API
-  const userMovies = useMemo(() => {
-    return movieData.filter(movie => 
-      favoriteMovies.includes(movie.id) || watchHistory.includes(movie.id)
-    );
-  }, [favoriteMovies, watchHistory]);
-
-  // TasteDive removed: keep state for minimal code churn
   useEffect(() => {
-    setTasteDiveRecommendations([]);
-  }, [userMovies]);
-
-  return useMemo(() => {
-    // Try to match TasteDive recommendations with our movie data
-    const matchedRecommendations: Movie[] = [];
+    let cancelled = false;
     
-    // TasteDive removed
-
-    // If we have TasteDive recommendations, use them
-    if (matchedRecommendations.length > 0) {
-      return matchedRecommendations.slice(0, 10);
-    }
-
-    // Fallback to local recommendation algorithm
-    const userGenres = userMovies.flatMap(movie => movie.genre);
-    const genreCount = userGenres.reduce((acc, genre) => {
-      acc[genre] = (acc[genre] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    // Sort genres by frequency
-    const topGenres = Object.entries(genreCount)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 3)
-      .map(([genre]) => genre);
-
-    // Find recommendations based on top genres
-    const recommendations = movieData
-      .filter(movie => {
-        // Exclude current movie and already watched/favorited
-        if (movie.id === currentMovieId) return false;
-        if (favoriteMovies.includes(movie.id)) return false;
-        if (watchHistory.includes(movie.id)) return false;
+    (async () => {
+      try {
+        setLoading(true);
         
-        // Include if movie has any of user's top genres
-        return movie.genre.some(genre => topGenres.includes(genre));
-      })
-      .sort((a, b) => {
-        // Sort by genre match count and rating
-        const aGenreMatches = a.genre.filter(g => topGenres.includes(g)).length;
-        const bGenreMatches = b.genre.filter(g => topGenres.includes(g)).length;
+        // Get recent movies from different categories
+        const [phimLe, phimBo, hoatHinh, tvShows] = await Promise.all([
+          phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('phim-bo', { page: 1, limit: 8, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('hoat-hinh', { page: 1, limit: 8, sort_field: 'modified.time', sort_type: 'desc' }),
+          phimapiService.getList('tv-shows', { page: 1, limit: 8, sort_field: 'modified.time', sort_type: 'desc' })
+        ]);
         
-        if (aGenreMatches !== bGenreMatches) {
-          return bGenreMatches - aGenreMatches;
+        if (!cancelled) {
+          // Combine all movies
+          const allMovies = [
+            ...(phimLe.data?.items || []),
+            ...(phimBo.data?.items || []),
+            ...(hoatHinh.data?.items || []),
+            ...(tvShows.data?.items || [])
+          ];
+          
+          // Map to Movie format
+          const mappedMovies: Movie[] = allMovies.map((item: any) => ({
+            id: item.slug || item._id,
+            title: item.name,
+            description: '',
+            image: phimapiService.formatImage(item.poster_url || item.thumb_url),
+            backdropImage: phimapiService.formatImage(item.thumb_url || item.poster_url),
+            year: String(item.year || ''),
+            rating: '',
+            duration: item.time || '',
+            genre: (item.category || []).map((c: any) => c?.name || '').filter(Boolean),
+            videoUrl: '',
+            category: (item.category && item.category[0]?.name) || 'Khác',
+            imdbRating: item.tmdb?.vote_average ? String(item.tmdb.vote_average) : undefined
+          }));
+          
+          // Filter out current movie and already watched/favorited
+          const filteredMovies = mappedMovies.filter(movie => {
+            if (movie.id === currentMovieId) return false;
+            if (favoriteMovies.includes(movie.id)) return false;
+            if (watchHistory.includes(movie.id)) return false;
+            return true;
+          });
+          
+          // Sort by rating and take top 10
+          const sortedMovies = filteredMovies
+            .sort((a, b) => {
+              const aRating = parseFloat(a.imdbRating || '0');
+              const bRating = parseFloat(b.imdbRating || '0');
+              return bRating - aRating;
+            })
+            .slice(0, 10);
+          
+          setRecommendations(sortedMovies);
         }
-        
-        return (b.imdbRating || 0) - (a.imdbRating || 0);
-      })
-      .slice(0, 10);
+      } catch (error) {
+        console.error('Failed to fetch recommendations:', error);
+        if (!cancelled) {
+          setRecommendations([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    })();
+    
+    return () => {
+      cancelled = true;
+    };
+  }, [favoriteMovies, watchHistory, currentMovieId]);
 
-    // If no recommendations based on preferences, return popular movies
-    if (recommendations.length === 0) {
-      return movieData
-        .filter(movie => movie.id !== currentMovieId)
-        .sort((a, b) => (b.imdbRating || 0) - (a.imdbRating || 0))
-        .slice(0, 10);
-    }
-
-    return recommendations;
-  }, [favoriteMovies, watchHistory, currentMovieId, userMovies, tasteDiveRecommendations]);
+  return recommendations;
 }
-
-// Hook for getting TasteDive recommendations for a specific movie
-// TasteDive per-movie recommendations hook removed

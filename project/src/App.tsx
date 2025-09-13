@@ -15,6 +15,7 @@ import FavoritesPage from './pages/FavoritesPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './pages/AdminPage';
 import WatchPage from './pages/WatchPage';
+import FAQPage from './pages/FAQPage';
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/faq" element={<FAQPage />} />
             
             {/* Protected Routes */}
             <Route path="/" element={

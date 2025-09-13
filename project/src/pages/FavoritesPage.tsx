@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import { getMovieById } from '../data/movies';
 import { Movie } from '../types';
+import { phimapiService } from '../services/phimapiService';
 import MovieCard from '../components/MovieCard';
 
 const FavoritesPage: React.FC = () => {
@@ -9,14 +9,54 @@ const FavoritesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const loadFavorites = () => {
-      const favorites = JSON.parse(localStorage.getItem('phimtoc_favorites') || '[]');
-      const movies = favorites
-        .map((id: string) => getMovieById(id))
-        .filter((movie: Movie | undefined): movie is Movie => movie !== undefined);
-      
-      setFavoriteMovies(movies);
-      setIsLoading(false);
+    const loadFavorites = async () => {
+      try {
+        setIsLoading(true);
+        const favorites = JSON.parse(localStorage.getItem('phimtoc_favorites') || '[]');
+        
+        if (favorites.length === 0) {
+          setFavoriteMovies([]);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Fetch movie details for each favorite
+        const moviePromises = favorites.map(async (id: string) => {
+          try {
+            const detail = await phimapiService.getMovieDetail(id);
+            const movie = detail?.movie;
+            if (!movie) return null;
+            
+            return {
+              id: movie.slug || movie._id || id,
+              title: movie.name || movie.origin_name || 'Không rõ',
+              description: movie.content || '',
+              image: phimapiService.formatImage(movie.poster_url || movie.thumb_url),
+              backdropImage: phimapiService.formatImage(movie.cover_url || movie.thumb_url),
+              year: String(movie.year || ''),
+              rating: '',
+              duration: movie.time || '',
+              genre: (movie.category || []).map((c: any) => c?.name || '').filter(Boolean),
+              videoUrl: '',
+              category: (movie.category && movie.category[0]?.name) || 'Khác',
+              imdbRating: movie.tmdb?.vote_average ? String(movie.tmdb.vote_average) : undefined
+            } as Movie;
+          } catch (error) {
+            console.error(`Failed to fetch movie ${id}:`, error);
+            return null;
+          }
+        });
+        
+        const movies = (await Promise.all(moviePromises))
+          .filter((movie): movie is Movie => movie !== null);
+        
+        setFavoriteMovies(movies);
+      } catch (error) {
+        console.error('Failed to load favorites:', error);
+        setFavoriteMovies([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadFavorites();
@@ -43,7 +83,7 @@ const FavoritesPage: React.FC = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
       </div>
     );
   }
@@ -53,7 +93,7 @@ const FavoritesPage: React.FC = () => {
       <div className="px-4 md:px-16 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center space-x-3 mb-8">
-            <Heart className="w-8 h-8 text-red-600 fill-current" />
+            <Heart className="w-8 h-8 text-purple-500 fill-current" />
             <h1 className="text-3xl md:text-4xl font-bold">Phim yêu thích</h1>
           </div>
 
@@ -80,7 +120,7 @@ const FavoritesPage: React.FC = () => {
               </p>
               <a
                 href="/"
-                className="inline-block bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded transition-colors"
+                className="inline-block bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg"
               >
                 Khám phá phim
               </a>

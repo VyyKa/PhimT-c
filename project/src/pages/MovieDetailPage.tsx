@@ -7,7 +7,6 @@ import { phimapiService } from '../services/phimapiService';
 import { Movie, Review } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { useRecommendations } from '../hooks/useRecommendations';
-import VideoPlayer from '../components/VideoPlayer';
 // In future we can fetch real detail and episodes via phimapiService
 import MovieRow from '../components/MovieRow';
 import ReviewSystem from '../components/ReviewSystem';
@@ -19,7 +18,6 @@ const MovieDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [movie, setMovie] = useState<Movie | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
@@ -136,7 +134,7 @@ const MovieDetailPage: React.FC = () => {
           animate={{ opacity: 1 }}
           className="text-center"
         >
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-500 mx-auto mb-4"></div>
           <p className="text-white text-lg">Đang tải thông tin phim...</p>
         </motion.div>
       </div>
@@ -150,7 +148,7 @@ const MovieDetailPage: React.FC = () => {
           <h2 className="text-white text-2xl mb-4">Không tìm thấy phim</h2>
           <button
             onClick={() => navigate('/')}
-            className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded transition-colors"
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg"
           >
             Về trang chủ
           </button>
@@ -274,17 +272,11 @@ const MovieDetailPage: React.FC = () => {
               <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 {/* Trailer removed */}
                 
-                {/* Watch Full Movie Button - Open popup modal */}
+                {/* Watch Full Movie Button - Always navigate to watch page */}
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    if ((movie as any).hlsUrl) {
-                      navigate(`/watch/${movie.id}`);
-                    } else {
-                      setIsPlaying(true);
-                    }
-                  }}
+                  onClick={() => navigate(`/watch/${movie.id}`)}
                   className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg group whitespace-nowrap"
                 >
                   <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -310,16 +302,6 @@ const MovieDetailPage: React.FC = () => {
         </motion.div>
       </motion.div>
 
-      {/* Video Player Modal */}
-      <VideoPlayer
-        videoUrl={movie.videoUrl}
-        title={movie.title}
-        isOpen={isPlaying}
-        onClose={() => setIsPlaying(false)}
-        isYouTubeTrailer={false}
-        driveUrl={movie.videoUrl}
-        hlsUrl={(movie as any).hlsUrl || undefined}
-      />
 
       {/* Trailer section removed */}
 

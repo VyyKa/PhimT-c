@@ -24,6 +24,7 @@ const WatchPage: React.FC = () => {
         const detail = await phimapiService.getMovieDetail(id);
         if (!cancelled) setState({ loading: false, error: null, detail });
       } catch (e) {
+        console.error('Error fetching movie detail:', e);
         if (!cancelled) setState({ loading: false, error: e, detail: null });
       }
     })();
@@ -41,6 +42,8 @@ const WatchPage: React.FC = () => {
     if (s.startsWith('//')) s = `https:${s}`;
     s = s.replace(/\s+/g, '');
     const m3u8 = /\.m3u8(\?|#|$)/i.test(s);
+    
+    
     return { src: s, isM3U8: m3u8, movie: d.movie || {}, episodes: eps };
   }, [state, serverIndex, epIndex]);
 
@@ -116,7 +119,29 @@ const WatchPage: React.FC = () => {
               />
             </div>
           ) : (
-            <div className="aspect-video w-full flex items-center justify-center">Không có nguồn phát</div>
+            <div className="aspect-video w-full flex flex-col items-center justify-center p-8 bg-gradient-to-br from-gray-900 to-black">
+              <div className="text-center max-w-md">
+                <div className="text-6xl mb-4">🎬</div>
+                <div className="text-2xl font-bold mb-4 text-white">Phim chưa có nguồn phát</div>
+                <div className="text-gray-400 mb-6">
+                  Phim này hiện tại chưa có link phát. Vui lòng thử lại sau hoặc chọn phim khác.
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link 
+                    to={`/movie/${id}`} 
+                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-300"
+                  >
+                    ← Quay lại chi tiết
+                  </Link>
+                  <Link 
+                    to="/browse" 
+                    className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-medium transition-all duration-300"
+                  >
+                    Duyệt phim khác
+                  </Link>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
