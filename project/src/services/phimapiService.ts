@@ -22,6 +22,22 @@ export interface PhimApiListResponse {
 
 const BASE = 'https://phimapi.com';
 
+// Simple in-memory cache
+const cache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+function getCachedData(key: string) {
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+  return null;
+}
+
+function setCachedData(key: string, data: any) {
+  cache.set(key, { data, timestamp: Date.now() });
+}
+
 export function toWebpImage(sourceUrl: string | undefined | null): string | undefined {
   if (!sourceUrl) return undefined;
   // Ensure absolute URL if API returns relative path
@@ -35,28 +51,49 @@ async function httpGet<T>(url: string): Promise<T> {
   return res.json();
 }
 
-// Search movies by keyword (v1)
+// Search movies by keyword (v1) with caching
 export async function searchMovies(keyword: string, page = 1, limit = 12): Promise<PhimApiItem[]> {
+  const cacheKey = `search_${keyword}_${page}_${limit}`;
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+  
   const url = `${BASE}/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`;
   const data = (await httpGet<PhimApiListResponse>(url)) as PhimApiListResponse;
   const items = data?.data?.items || data?.items || [];
-  return items as PhimApiItem[];
+  const result = items as PhimApiItem[];
+  
+  setCachedData(cacheKey, result);
+  return result;
 }
 
-// Latest movies (v2/v3 give richer structures). Fallback to v1 list.
+// Latest movies (v2/v3 give richer structures). Fallback to v1 list with caching
 export async function getLatest(page = 1): Promise<PhimApiItem[]> {
+  const cacheKey = `latest_${page}`;
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+  
   try {
     const data = await httpGet<PhimApiListResponse>(`${BASE}/danh-sach/phim-moi-cap-nhat-v3?page=${page}`);
-    return (data?.data?.items || data?.items || []) as PhimApiItem[];
+    const result = (data?.data?.items || data?.items || []) as PhimApiItem[];
+    setCachedData(cacheKey, result);
+    return result;
   } catch {
     const data = await httpGet<PhimApiListResponse>(`${BASE}/danh-sach/phim-moi-cap-nhat?page=${page}`);
-    return (data?.data?.items || data?.items || []) as PhimApiItem[];
+    const result = (data?.data?.items || data?.items || []) as PhimApiItem[];
+    setCachedData(cacheKey, result);
+    return result;
   }
 }
 
-// Get movie detail by slug
+// Get movie detail by slug with caching
 export async function getMovieDetail(slug: string): Promise<any> {
-  return httpGet<any>(`${BASE}/phim/${slug}`);
+  const cacheKey = `detail_${slug}`;
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+  
+  const result = await httpGet<any>(`${BASE}/phim/${slug}`);
+  setCachedData(cacheKey, result);
+  return result;
 }
 
 // Convenience: Get Conan related movies via search

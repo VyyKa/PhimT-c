@@ -23,9 +23,9 @@ const Hero: React.FC = () => {
           image: phimapiService.formatImage(it.poster_url || it.thumb_url),
           backdropImage: phimapiService.formatImage(it.thumb_url || it.poster_url),
           year: it.year || '',
-          duration: '',
-          rating: '',
-          imdbRating: undefined,
+          duration: it.time || '',
+          rating: it.quality || '',
+          imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined,
           genre: (it.category || []).map((c: any) => c?.name || ''),
           category: (it.category && it.category[0]?.name) || 'Mới cập nhật'
         });
@@ -177,7 +177,9 @@ const Hero: React.FC = () => {
           >
             <span className="flex items-center space-x-1">
               <span className="text-yellow-400">⭐</span>
-              <span className="font-semibold">{currentMovie?.imdbRating || 'N/A'}</span>
+              <span className="font-semibold">
+                {currentMovie?.imdbRating ? parseFloat(currentMovie.imdbRating).toFixed(1) : 'N/A'}
+              </span>
             </span>
             <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
             <span>{currentMovie?.year || ''}</span>

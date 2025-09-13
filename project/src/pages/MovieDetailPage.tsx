@@ -63,12 +63,12 @@ const MovieDetailPage: React.FC = () => {
           image: phimapiService.formatImage(m.poster_url || m.thumb_url),
           backdropImage: m.cover_url || m.thumb_url,
           year: String(m.year || ''),
-          rating: '',
-          duration: '',
+          rating: m.quality || '',
+          duration: m.time || '',
           genre: (m.category || []).map((c: any) => c?.name || '').filter(Boolean),
           videoUrl: firstEmbed || '',
           category: (m.category && m.category[0]?.name) || 'Khác',
-          imdbRating: undefined,
+          imdbRating: m.tmdb?.vote_average ? parseFloat(m.tmdb.vote_average) : undefined,
           cast: (m.actor || []).slice(0, 5),
           director: Array.isArray(m.director) ? m.director[0] : m.director
         };
@@ -219,7 +219,9 @@ const MovieDetailPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-4 mb-6 text-lg">
                 <div className="flex items-center space-x-1">
                   <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                  <span className="font-semibold">{movie.imdbRating || 'N/A'}</span>
+                  <span className="font-semibold">
+                    {movie.imdbRating ? parseFloat(movie.imdbRating).toFixed(1) : 'N/A'}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Calendar className="w-5 h-5" />

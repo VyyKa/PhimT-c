@@ -30,17 +30,18 @@ const SearchPage: React.FC = () => {
       const res = await phimapiService.search({ keyword: searchQuery, page: 1, limit: 20 });
       const items = res.data?.items || [];
       // Map remote items into local Movie shape as best-effort for display in cards
-      const mapped: Movie[] = items.map((it) => ({
-        id: it.slug || it._id,
-        title: it.name,
+      const mapped: Movie[] = items.map((it: any) => ({
+        id: it.slug || it._id || '',
+        title: it.name || '',
         description: '',
         image: phimapiService.formatImage(it.poster_url || it.thumb_url),
         year: String(it.year || ''),
         rating: '',
         duration: '',
-        genre: (it.category || []).map(c => c.name || '').filter(Boolean),
+        genre: (it.category || []).map((c: any) => c.name || '').filter(Boolean),
         videoUrl: '',
-        category: (it.category && it.category[0]?.name) || 'Khác'
+        category: (it.category && it.category[0]?.name) || 'Khác',
+        imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined
       }));
       setResults(mapped);
     } catch (e) {

@@ -112,7 +112,7 @@ const BrowsePage: React.FC = () => {
             genre: (item.category || []).map((c: any) => c?.name || '').filter(Boolean),
             videoUrl: '',
             category: (item.category && item.category[0]?.name) || 'Khác',
-            imdbRating: undefined
+            imdbRating: item.tmdb?.vote_average ? parseFloat(item.tmdb.vote_average) : undefined
           }));
 
           // Sort movies

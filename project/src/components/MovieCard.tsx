@@ -134,7 +134,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
             <div className="flex items-center space-x-1 px-1.5 md:px-2 py-0.5 md:py-1 glass-morphism rounded-lg">
               <Star className="w-2.5 h-2.5 md:w-3 md:h-3 text-yellow-400 fill-current" />
               <span className="text-white text-xs font-semibold">
-                {movie.imdbRating || 'N/A'}
+                {movie.imdbRating ? movie.imdbRating.toFixed(1) : 'N/A'}
               </span>
             </div>
           </div>

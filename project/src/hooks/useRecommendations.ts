@@ -47,7 +47,7 @@ export function useRecommendations(
             genre: (item.category || []).map((c: any) => c?.name || '').filter(Boolean),
             videoUrl: '',
             category: (item.category && item.category[0]?.name) || 'Khác',
-            imdbRating: item.tmdb?.vote_average ? String(item.tmdb.vote_average) : undefined
+            imdbRating: item.tmdb?.vote_average ? parseFloat(item.tmdb.vote_average) : undefined
           }));
           
           // Filter out current movie and already watched/favorited

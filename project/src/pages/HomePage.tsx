@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
             genre: (it.category || []).map((c: any) => c?.name || '').filter(Boolean),
             videoUrl: '',
             category: (it.category && it.category[0]?.name) || 'Khác',
-            imdbRating: undefined
+            imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined
           }));
 
         const newSections = [

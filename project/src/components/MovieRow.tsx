@@ -28,8 +28,8 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         ? Math.max(0, scrollPosition - scrollAmount)
         : Math.min(container.scrollWidth - container.clientWidth, scrollPosition + scrollAmount);
       
-      container.scrollBy({ 
-        left: direction === 'left' ? -scrollAmount : scrollAmount, 
+      container.scrollTo({ 
+        left: newPosition, 
         behavior: 'smooth' 
       });
       setScrollPosition(newPosition);
@@ -169,16 +169,34 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
 
         {/* Scroll Indicator */}
         <div className="flex justify-center mt-4 space-x-1">
-          {Array.from({ length: Math.ceil(movies.length / 6) }).map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                Math.floor(scrollPosition / (containerRef.current?.clientWidth || 1)) === index
-                  ? 'bg-gradient-to-r from-blue-400 to-purple-400'
-                  : 'bg-gray-600'
-              }`}
-            />
-          ))}
+          {Array.from({ length: Math.ceil(movies.length / 6) }).map((_, index) => {
+            const container = containerRef.current;
+            if (!container) return null;
+            
+            const scrollWidth = container.scrollWidth - container.clientWidth;
+            const currentPage = scrollWidth > 0 ? Math.round((scrollPosition / scrollWidth) * (Math.ceil(movies.length / 6) - 1)) : 0;
+            
+            const handleDotClick = () => {
+              const targetPosition = (scrollWidth / (Math.ceil(movies.length / 6) - 1)) * index;
+              container.scrollTo({ 
+                left: targetPosition, 
+                behavior: 'smooth' 
+              });
+              setScrollPosition(targetPosition);
+            };
+            
+            return (
+              <button
+                key={index}
+                onClick={handleDotClick}
+                className={`w-2 h-2 rounded-full transition-all duration-300 hover:scale-125 ${
+                  currentPage === index
+                    ? 'bg-gradient-to-r from-blue-400 to-purple-400'
+                    : 'bg-gray-600 hover:bg-gray-500'
+                }`}
+              />
+            );
+          })}
         </div>
       </div>
     </motion.div>
