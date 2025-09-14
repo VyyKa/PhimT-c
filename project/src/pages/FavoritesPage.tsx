@@ -3,6 +3,7 @@ import { Heart } from 'lucide-react';
 import { Movie } from '../types';
 import { phimapiService } from '../services/phimapiService';
 import MovieCard from '../components/MovieCard';
+import toast from 'react-hot-toast';
 
 const FavoritesPage: React.FC = () => {
   const [favoriteMovies, setFavoriteMovies] = useState<Movie[]>([]);
@@ -27,8 +28,15 @@ const FavoritesPage: React.FC = () => {
         const moviePromises = favorites.map(async (id: string) => {
           try {
             const detail = await phimapiService.getMovieDetail(id);
+            if (!detail || !detail.status) {
+              console.warn(`Invalid response for movie ${id}:`, detail);
+              return null;
+            }
             const movie = detail?.movie;
-            if (!movie) return null;
+            if (!movie) {
+              console.warn(`No movie data for ${id}`);
+              return null;
+            }
             
             return {
               id: movie.slug || movie._id || id,
@@ -46,7 +54,21 @@ const FavoritesPage: React.FC = () => {
             } as Movie;
           } catch (error) {
             console.error(`Failed to fetch movie ${id}:`, error);
-            return null;
+            // Return a fallback movie object to prevent complete failure
+            return {
+              id: id,
+              title: 'Phim không khả dụng',
+              description: 'Không thể tải thông tin phim này',
+              image: '/placeholder-movie.jpg',
+              backdropImage: '/placeholder-movie.jpg',
+              year: '',
+              rating: '',
+              duration: '',
+              genre: [],
+              videoUrl: '',
+              category: 'Khác',
+              imdbRating: undefined
+            } as Movie;
           }
         });
         
@@ -57,6 +79,16 @@ const FavoritesPage: React.FC = () => {
       } catch (error) {
         console.error('Failed to load favorites:', error);
         setFavoriteMovies([]);
+        // Show user-friendly error message
+        toast.error('Không thể tải danh sách yêu thích. Vui lòng thử lại sau.', {
+          duration: 4000,
+          style: {
+            background: 'linear-gradient(135deg, #dc2626, #b91c1c)',
+            color: '#fff',
+            border: '1px solid rgba(220, 38, 38, 0.3)',
+            borderRadius: '12px',
+          },
+        });
       } finally {
         setIsLoading(false);
       }

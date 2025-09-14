@@ -45,7 +45,7 @@ const HomePage: React.FC = () => {
           }));
 
         const newSections = [
-          { title: `${t('topRated') || 'Phim lẻ'}`, movies: mapItems(phimLe.data?.items || []) },
+          { title: 'Phim mới cập nhật', movies: mapItems(phimLe.data?.items || []) },
           { title: `${t('trendingNow') || 'Phim bộ'}`, movies: mapItems(phimBo.data?.items || []) },
           { title: `Anime`, movies: mapItems(hoatHinh.data?.items || []) },
           { title: `TV Shows`, movies: mapItems(tvShows.data?.items || []) }
