@@ -220,7 +220,7 @@ const MovieDetailPage: React.FC = () => {
                 <div className="flex items-center space-x-1">
                   <Star className="w-4 h-4 xs:w-5 xs:h-5 text-yellow-500 fill-current" />
                   <span className="font-semibold">
-                    {movie.imdbRating ? parseFloat(movie.imdbRating).toFixed(1) : 'N/A'}
+                    {movie.imdbRating ? parseFloat(String(movie.imdbRating)).toFixed(1) : 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -281,22 +281,22 @@ const MovieDetailPage: React.FC = () => {
                   onClick={() => navigate(`/watch/${movie.id}`)}
                   className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 xs:px-6 py-2.5 xs:py-3 rounded-lg font-medium transition-all duration-300 shadow-lg group whitespace-nowrap touch-button text-sm xs:text-base"
                 >
-                  <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
-                  <span className="text-sm">Xem phim ngay</span>
+                  <Play className="w-3.5 h-3.5 xs:w-4 xs:h-4 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs xs:text-sm">Xem phim ngay</span>
                 </motion.button>
                 
                 <motion.button 
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={toggleFavorite}
-                  className={`flex items-center justify-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 backdrop-blur-sm whitespace-nowrap ${
+                  className={`flex items-center justify-center space-x-2 px-4 xs:px-6 py-2.5 xs:py-3 rounded-lg font-medium transition-all duration-300 backdrop-blur-sm whitespace-nowrap touch-button text-sm xs:text-base ${
                     isFavorite 
                       ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700' 
                       : 'bg-slate-700/80 text-white hover:bg-slate-600/80 border border-purple-500/30'
                   }`}
                 >
-                  <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-                  <span className="text-sm">{isFavorite ? 'Đã yêu thích' : 'Yêu thích'}</span>
+                  <Heart className={`w-3.5 h-3.5 xs:w-4 xs:h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                  <span className="text-xs xs:text-sm">{isFavorite ? 'Đã yêu thích' : 'Yêu thích'}</span>
                 </motion.button>
               </div>
             </div>
@@ -312,7 +312,7 @@ const MovieDetailPage: React.FC = () => {
         initial={{ y: 50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 1.4, duration: 0.6 }}
-        className="px-4 md:px-16 py-12"
+        className="px-3 xs:px-4 sm:px-6 md:px-16 py-8 xs:py-10 sm:py-12 safe-area-left safe-area-right"
       >
         <div className="max-w-6xl mx-auto">
           <ReviewSystem
@@ -331,7 +331,7 @@ const MovieDetailPage: React.FC = () => {
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.8, duration: 0.6 }}
-          className="pb-20"
+          className="pb-16 xs:pb-20"
         >
           <MovieRow
             title="Phim đề xuất cho bạn"
