@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, Info, Volume2, VolumeX } from 'lucide-react';
+import { Play, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { phimapiService } from '../services/phimapiService';
 
 const Hero: React.FC = () => {
-  const [isMuted, setIsMuted] = useState(true);
   const [featuredMovies, setFeaturedMovies] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { t } = useTranslation();
@@ -251,19 +250,6 @@ const Hero: React.FC = () => {
               </Link>
             </motion.div>
 
-            {/* Volume Control */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setIsMuted(!isMuted)}
-              className="hidden sm:flex items-center justify-center w-8 h-8 xs:w-10 xs:h-10 md:w-12 md:h-12 glass-morphism-light rounded-full text-white hover:bg-white/10 transition-all duration-300 group touch-button"
-            >
-              {isMuted ? (
-                <VolumeX className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
-              ) : (
-                <Volume2 className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
-              )}
-            </motion.button>
           </motion.div>
 
           {/* Additional Info */}
