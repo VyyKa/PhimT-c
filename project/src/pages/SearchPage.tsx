@@ -12,6 +12,9 @@ const SearchPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     const searchQuery = searchParams.get('q');
     if (searchQuery) {
       setQuery(searchQuery);

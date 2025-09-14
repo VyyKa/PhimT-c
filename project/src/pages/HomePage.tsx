@@ -15,6 +15,9 @@ const HomePage: React.FC = () => {
   }[]>([]);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     let cancelled = false;
     (async () => {
       try {

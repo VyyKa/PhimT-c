@@ -14,6 +14,9 @@ const BrowsePage: React.FC = () => {
 
   // Get category from URL params
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     const categoryParam = searchParams.get('category');
     if (categoryParam) {
       setSelectedCategory(categoryParam);

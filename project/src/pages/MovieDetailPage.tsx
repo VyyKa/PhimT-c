@@ -31,6 +31,10 @@ const MovieDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (!id) return;
+    
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     let cancelled = false;
     setIsLoading(true);
     (async () => {

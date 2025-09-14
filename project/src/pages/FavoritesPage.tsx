@@ -9,6 +9,9 @@ const FavoritesPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     const loadFavorites = async () => {
       try {
         setIsLoading(true);

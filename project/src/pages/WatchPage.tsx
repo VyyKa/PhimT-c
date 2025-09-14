@@ -17,6 +17,9 @@ const WatchPage: React.FC = () => {
   const [state, setState] = React.useState<any>({ loading: true, error: null, detail: null });
 
   React.useEffect(() => {
+    // Scroll to top when component mounts
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     let cancelled = false;
     (async () => {
       try {

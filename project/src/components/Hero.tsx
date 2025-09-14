@@ -225,28 +225,48 @@ const Hero: React.FC = () => {
             className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-3 sm:space-x-4"
           >
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.08, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              className="relative"
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="btn-primary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold shadow-2xl group text-xs xs:text-sm md:text-base touch-button"
+                className="relative btn-primary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold shadow-2xl group text-xs xs:text-sm md:text-base touch-button overflow-hidden"
               >
-                <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
-                <span>{t('play')}</span>
+                {/* Glow effect background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                
+                {/* Button content */}
+                <div className="relative z-10 flex items-center space-x-1 xs:space-x-2 md:space-x-3">
+                  <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold">{t('play')}</span>
+                </div>
+                
+                {/* Shine effect */}
+                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
               </Link>
             </motion.div>
 
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.08, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              className="relative"
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="btn-secondary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold group text-xs xs:text-sm md:text-base touch-button"
+                className="relative btn-secondary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold group text-xs xs:text-sm md:text-base touch-button overflow-hidden border-2 border-white/20 hover:border-white/40 transition-all duration-300"
               >
-                <Info className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
-                <span>{t('info')}</span>
+                {/* Glow effect background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                
+                {/* Button content */}
+                <div className="relative z-10 flex items-center space-x-1 xs:space-x-2 md:space-x-3">
+                  <Info className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
+                  <span className="font-bold">{t('info')}</span>
+                </div>
+                
+                {/* Shine effect */}
+                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
               </Link>
             </motion.div>
 
