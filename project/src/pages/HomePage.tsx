@@ -86,7 +86,7 @@ const HomePage: React.FC = () => {
       initial="hidden"
       animate="visible"
       variants={containerVariants}
-      className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden"
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white overflow-hidden safe-area-top"
     >
       {/* Hero Section */}
       <motion.div variants={sectionVariants}>
@@ -98,7 +98,7 @@ const HomePage: React.FC = () => {
       {/* Movie Sections */}
       <motion.div 
         variants={sectionVariants}
-        className="pb-20 -mt-32 relative z-10"
+        className="pb-16 xs:pb-20 -mt-24 xs:-mt-28 sm:-mt-32 relative z-10"
       >
         {/* Background Elements */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-full blur-3xl"></div>

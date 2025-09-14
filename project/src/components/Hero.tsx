@@ -134,7 +134,7 @@ const Hero: React.FC = () => {
       <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-2xl float-animation" style={{ animationDelay: '1s' }}></div>
 
       {/* Content */}
-      <div className="relative z-10 px-4 md:px-8 lg:px-16 max-w-4xl w-full">
+      <div className="relative z-10 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-16 max-w-4xl w-full safe-area-left safe-area-right">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -160,7 +160,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-bold mb-4 md:mb-6 leading-tight"
+            className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 xs:mb-4 md:mb-6 leading-tight"
           >
             <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent neon-text">
               {currentMovie?.title || ''}
@@ -173,7 +173,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex items-center space-x-4 mb-6 text-sm text-gray-300"
+            className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4 mb-4 xs:mb-5 sm:mb-6 text-xs xs:text-sm text-gray-300"
           >
             <span className="flex items-center space-x-1">
               <span className="text-yellow-400">⭐</span>
@@ -195,12 +195,12 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex flex-wrap gap-2 mb-6"
+            className="flex flex-wrap gap-1 xs:gap-2 mb-4 xs:mb-5 sm:mb-6"
           >
             {(currentMovie?.genre || []).slice(0, 3).map((genre: string, index: number) => (
               <span 
                 key={index}
-                className="px-3 py-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/20 rounded-full text-xs font-medium text-purple-200"
+                className="px-2 xs:px-3 py-0.5 xs:py-1 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/20 rounded-full text-xs font-medium text-purple-200"
               >
                 {genre}
               </span>
@@ -213,7 +213,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-sm sm:text-base md:text-lg lg:text-xl mb-6 md:mb-8 text-gray-200 leading-relaxed max-w-2xl line-clamp-2 md:line-clamp-3"
+            className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-4 xs:mb-5 sm:mb-6 md:mb-8 text-gray-200 leading-relaxed max-w-2xl line-clamp-2 md:line-clamp-3"
           >
             {currentMovie?.description || ''}
           </motion.p>
@@ -223,7 +223,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4"
+            className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-3 sm:space-x-4"
           >
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -231,7 +231,7 @@ const Hero: React.FC = () => {
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="btn-primary flex items-center justify-center space-x-2 md:space-x-3 px-6 md:px-8 py-3 md:py-4 text-white font-semibold shadow-2xl group text-sm md:text-base"
+                className="btn-primary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold shadow-2xl group text-xs xs:text-sm md:text-base touch-button"
               >
                 <Play className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                 <span>{t('play')}</span>
@@ -244,7 +244,7 @@ const Hero: React.FC = () => {
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="btn-secondary flex items-center justify-center space-x-2 md:space-x-3 px-6 md:px-8 py-3 md:py-4 text-white font-semibold group text-sm md:text-base"
+                className="btn-secondary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold group text-xs xs:text-sm md:text-base touch-button"
               >
                 <Info className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
                 <span>{t('info')}</span>
@@ -256,7 +256,7 @@ const Hero: React.FC = () => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setIsMuted(!isMuted)}
-              className="hidden md:flex items-center justify-center w-10 h-10 md:w-12 md:h-12 glass-morphism-light rounded-full text-white hover:bg-white/10 transition-all duration-300 group"
+              className="hidden sm:flex items-center justify-center w-8 h-8 xs:w-10 xs:h-10 md:w-12 md:h-12 glass-morphism-light rounded-full text-white hover:bg-white/10 transition-all duration-300 group touch-button"
             >
               {isMuted ? (
                 <VolumeX className="w-4 h-4 md:w-5 md:h-5 group-hover:scale-110 transition-transform" />
@@ -286,12 +286,12 @@ const Hero: React.FC = () => {
 
       {/* Carousel Indicators - Positioned in top right */}
       {featuredMovies.length > 1 && (
-        <div className="absolute top-20 md:top-32 right-4 md:right-8 flex flex-col space-y-2">
+        <div className="absolute top-16 xs:top-20 md:top-32 right-3 xs:right-4 md:right-8 flex flex-col space-y-1.5 xs:space-y-2">
           {featuredMovies.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${
+              className={`w-1.5 h-1.5 xs:w-2 xs:h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 touch-button ${
                 index === currentIndex 
                   ? 'bg-white scale-125' 
                   : 'bg-white/50 hover:bg-white/75'

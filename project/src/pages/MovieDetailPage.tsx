@@ -158,13 +158,13 @@ const MovieDetailPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white pt-24 md:pt-28">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white pt-16 xs:pt-20 md:pt-24 lg:pt-28 safe-area-top">
       {/* Hero Section */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative h-screen"
+        className="relative min-h-screen xs:h-auto md:h-screen"
       >
         <div className="absolute inset-0">
           <LazyImage
@@ -182,9 +182,9 @@ const MovieDetailPage: React.FC = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
           onClick={() => navigate(-1)}
-          className="absolute top-24 left-4 md:left-16 z-20 bg-slate-900/60 hover:bg-slate-900/80 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm border border-purple-500/30 hover:border-purple-400/50"
+          className="absolute top-16 xs:top-20 md:top-24 left-3 xs:left-4 md:left-16 z-20 bg-slate-900/60 hover:bg-slate-900/80 text-white p-2 xs:p-3 rounded-full transition-all duration-300 backdrop-blur-sm border border-purple-500/30 hover:border-purple-400/50 touch-button"
         >
-          <ArrowLeft className="w-6 h-6" />
+          <ArrowLeft className="w-5 h-5 xs:w-6 xs:h-6" />
         </motion.button>
 
         {/* Content */}
@@ -192,86 +192,86 @@ const MovieDetailPage: React.FC = () => {
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.8 }}
-          className="relative z-10 flex items-center h-full px-4 md:px-16"
+          className="relative z-10 flex items-center h-full px-3 xs:px-4 sm:px-6 md:px-16 safe-area-left safe-area-right"
         >
-          <div className="max-w-4xl flex flex-col md:flex-row items-start space-y-6 md:space-y-0 md:space-x-8">
+          <div className="max-w-4xl flex flex-col md:flex-row items-start space-y-4 xs:space-y-6 md:space-y-0 md:space-x-8">
             {/* Large Poster */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.7, duration: 0.6 }}
-              className="flex-shrink-0"
+              className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-start"
             >
               <LazyImage
                 src={movie.image}
                 alt={movie.title}
-                className="w-64 md:w-80 h-96 md:h-[480px] object-cover rounded-lg shadow-2xl"
+                className="w-48 xs:w-56 sm:w-64 md:w-80 h-72 xs:h-84 sm:h-96 md:h-[480px] object-cover rounded-lg shadow-2xl"
               />
             </motion.div>
 
             {/* Movie Info */}
             <div className="flex-1">
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 leading-tight">
+              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-3 xs:mb-4 leading-tight text-center md:text-left">
                 {movie.title}
               </h1>
               
               {/* Movie Meta Info */}
-              <div className="flex flex-wrap items-center gap-4 mb-6 text-lg">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 xs:gap-3 sm:gap-4 mb-4 xs:mb-5 sm:mb-6 text-sm xs:text-base sm:text-lg">
                 <div className="flex items-center space-x-1">
-                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                  <Star className="w-4 h-4 xs:w-5 xs:h-5 text-yellow-500 fill-current" />
                   <span className="font-semibold">
                     {movie.imdbRating ? parseFloat(movie.imdbRating).toFixed(1) : 'N/A'}
                   </span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Calendar className="w-5 h-5" />
+                  <Calendar className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span>{movie.year}</span>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <Clock className="w-5 h-5" />
+                  <Clock className="w-4 h-4 xs:w-5 xs:h-5" />
                   <span>{movie.duration}</span>
                 </div>
-                <span className="bg-gray-700 px-3 py-1 rounded text-sm font-medium">
+                <span className="bg-gray-700 px-2 xs:px-3 py-1 rounded text-xs xs:text-sm font-medium">
                   {movie.rating}
                 </span>
               </div>
 
               {/* Genres */}
-              <div className="flex flex-wrap gap-2 mb-6">
+              <div className="flex flex-wrap justify-center md:justify-start gap-1.5 xs:gap-2 mb-4 xs:mb-5 sm:mb-6">
                 {movie.genre.map((genre, index) => (
-                  <span key={index} className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-300 px-3 py-1 rounded-full text-sm font-medium border border-purple-400/20">
+                  <span key={index} className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 text-blue-300 px-2 xs:px-3 py-1 rounded-full text-xs xs:text-sm font-medium border border-purple-400/20">
                     {genre}
                   </span>
                 ))}
               </div>
 
               {/* Description */}
-              <p className="text-base md:text-lg mb-6 text-gray-200 leading-relaxed max-w-2xl">
+              <p className="text-sm xs:text-base md:text-lg mb-4 xs:mb-5 sm:mb-6 text-gray-200 leading-relaxed max-w-2xl text-center md:text-left px-2 md:px-0">
                 {movie.description}
               </p>
               
               {/* Cast & Director */}
               {(movie.cast || movie.director) && (
-                <div className="mb-8 space-y-2">
+                <div className="mb-6 xs:mb-8 space-y-2 text-center md:text-left">
                   {movie.director && (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center justify-center md:justify-start space-x-2">
                       <User className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-400">Đạo diễn:</span>
-                      <span className="text-white">{movie.director}</span>
+                      <span className="text-gray-400 text-sm xs:text-base">Đạo diễn:</span>
+                      <span className="text-white text-sm xs:text-base">{movie.director}</span>
                     </div>
                   )}
                   {movie.cast && movie.cast.length > 0 && (
-                    <div className="flex items-start space-x-2">
+                    <div className="flex items-start justify-center md:justify-start space-x-2">
                       <Users className="w-4 h-4 text-gray-400 mt-1" />
-                      <span className="text-gray-400">Diễn viên:</span>
-                      <span className="text-white">{movie.cast.slice(0, 3).join(', ')}</span>
+                      <span className="text-gray-400 text-sm xs:text-base">Diễn viên:</span>
+                      <span className="text-white text-sm xs:text-base">{movie.cast.slice(0, 3).join(', ')}</span>
                     </div>
                   )}
                 </div>
               )}
               
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+              <div className="flex flex-col xs:flex-row space-y-3 xs:space-y-0 xs:space-x-3 sm:space-x-4 justify-center md:justify-start">
                 {/* Trailer removed */}
                 
                 {/* Watch Full Movie Button - Always navigate to watch page */}
@@ -279,7 +279,7 @@ const MovieDetailPage: React.FC = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate(`/watch/${movie.id}`)}
-                  className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 shadow-lg group whitespace-nowrap"
+                  className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 xs:px-6 py-2.5 xs:py-3 rounded-lg font-medium transition-all duration-300 shadow-lg group whitespace-nowrap touch-button text-sm xs:text-base"
                 >
                   <Play className="w-4 h-4 group-hover:scale-110 transition-transform" />
                   <span className="text-sm">Xem phim ngay</span>

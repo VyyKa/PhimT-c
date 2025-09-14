@@ -58,8 +58,8 @@ const SearchPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20">
-      <div className="px-4 md:px-16 py-8">
+    <div className="min-h-screen bg-black text-white pt-16 xs:pt-20 safe-area-top">
+      <div className="px-3 xs:px-4 sm:px-6 md:px-16 py-6 xs:py-8 safe-area-left safe-area-right">
         <div className="max-w-7xl mx-auto">
           {/* Search Form */}
           <form onSubmit={handleSearch} className="mb-8">
@@ -69,14 +69,15 @@ const SearchPage: React.FC = () => {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Tìm kiếm phim, thể loại..."
-                className="w-full px-6 py-4 pl-12 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300"
+                className="w-full px-4 xs:px-6 py-3 xs:py-4 pl-10 xs:pl-12 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 touch-input text-sm xs:text-base"
               />
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Search className="absolute left-3 xs:left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 xs:w-5 xs:h-5 text-gray-400" />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-2 rounded-lg transition-all duration-300 shadow-lg"
+                className="absolute right-1 xs:right-2 top-1/2 transform -translate-y-1/2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-3 xs:px-6 py-1.5 xs:py-2 rounded-lg transition-all duration-300 shadow-lg touch-button text-xs xs:text-sm"
               >
-                Tìm kiếm
+                <span className="hidden xs:inline">Tìm kiếm</span>
+                <span className="xs:hidden">Tìm</span>
               </button>
             </div>
           </form>
@@ -89,7 +90,7 @@ const SearchPage: React.FC = () => {
           ) : (
             <>
               {query && (
-                <h2 className="text-2xl md:text-3xl font-bold mb-8">
+                <h2 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold mb-6 xs:mb-8">
                   {results.length > 0 
                     ? `Kết quả tìm kiếm cho "${query}" (${results.length} phim)`
                     : `Không tìm thấy kết quả cho "${query}"`
@@ -98,27 +99,27 @@ const SearchPage: React.FC = () => {
               )}
 
               {results.length > 0 ? (
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2 xs:gap-3 sm:gap-4">
                   {results.map((movie) => (
                     <MovieCard key={movie.id} movie={movie} size="medium" />
                   ))}
                 </div>
               ) : query && !isLoading ? (
-                <div className="text-center py-20">
-                  <div className="text-gray-400 text-lg mb-4">
+                <div className="text-center py-12 xs:py-16 sm:py-20">
+                  <div className="text-gray-400 text-base xs:text-lg mb-3 xs:mb-4">
                     Không tìm thấy phim nào phù hợp
                   </div>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 text-sm xs:text-base px-4">
                     Hãy thử tìm kiếm với từ khóa khác hoặc duyệt qua các danh mục phim
                   </p>
                 </div>
               ) : !query ? (
-                <div className="text-center py-20">
-                  <Search className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                  <div className="text-gray-400 text-lg mb-4">
+                <div className="text-center py-12 xs:py-16 sm:py-20">
+                  <Search className="w-12 h-12 xs:w-16 xs:h-16 text-gray-600 mx-auto mb-3 xs:mb-4" />
+                  <div className="text-gray-400 text-base xs:text-lg mb-3 xs:mb-4">
                     Tìm kiếm phim yêu thích của bạn
                   </div>
-                  <p className="text-gray-500">
+                  <p className="text-gray-500 text-sm xs:text-base px-4">
                     Nhập tên phim hoặc thể loại để bắt đầu tìm kiếm
                   </p>
                 </div>

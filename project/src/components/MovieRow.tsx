@@ -77,7 +77,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="px-4 md:px-8 lg:px-16 mb-12"
+      className="px-3 xs:px-4 sm:px-6 md:px-8 lg:px-16 mb-8 xs:mb-10 sm:mb-12 safe-area-left safe-area-right"
     >
       {/* Section Header */}
       <motion.div
@@ -85,10 +85,10 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex items-center justify-between mb-6"
+        className="flex items-center justify-between mb-4 xs:mb-5 sm:mb-6"
       >
         <div className="flex items-center space-x-3">
-          <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
+          <h2 className="text-lg xs:text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-white">
             {title}
           </h2>
           <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
@@ -99,13 +99,13 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleViewAll}
-          className="text-sm text-gray-400 hover:text-purple-400 transition-colors font-medium cursor-pointer"
+          className="text-xs xs:text-sm text-gray-400 hover:text-purple-400 transition-colors font-medium cursor-pointer touch-button"
         >
           {t('viewAll')} →
         </motion.button>
       </motion.div>
       
-      <div className="relative group px-4 md:px-12">
+      <div className="relative group px-2 xs:px-4 sm:px-6 md:px-12">
         {/* Left Arrow */}
         <AnimatePresence>
           {showLeftArrow && (
@@ -116,9 +116,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('left')}
-              className="absolute -left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
+              className="absolute -left-1 xs:-left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-6 h-6 xs:w-8 xs:h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20 touch-button"
             >
-              <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
+              <ChevronLeft className="w-3 h-3 xs:w-4 xs:h-4 md:w-6 md:h-6" />
             </motion.button>
           )}
         </AnimatePresence>
@@ -133,9 +133,9 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('right')}
-              className="absolute -right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20"
+              className="absolute -right-1 xs:-right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-6 h-6 xs:w-8 xs:h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20 touch-button"
             >
-              <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
+              <ChevronRight className="w-3 h-3 xs:w-4 xs:h-4 md:w-6 md:h-6" />
             </motion.button>
           )}
         </AnimatePresence>
@@ -144,7 +144,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         <div
           ref={containerRef}
           onScroll={handleScroll}
-          className="flex space-x-3 md:space-x-4 lg:space-x-6 overflow-x-auto scroll-smooth hide-scrollbar scroll-snap-x pb-4 px-1 md:px-2"
+          className="flex space-x-2 xs:space-x-3 sm:space-x-3 md:space-x-4 lg:space-x-6 overflow-x-auto scroll-smooth hide-scrollbar scroll-snap-x pb-3 xs:pb-4 px-0.5 xs:px-1 md:px-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {movies.map((movie, index) => (
@@ -168,7 +168,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
         </div>
 
         {/* Scroll Indicator */}
-        <div className="flex justify-center mt-4 space-x-1">
+        <div className="flex justify-center mt-3 xs:mt-4 space-x-1">
           {Array.from({ length: Math.ceil(movies.length / 6) }).map((_, index) => {
             const container = containerRef.current;
             if (!container) return null;
@@ -189,7 +189,7 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               <button
                 key={index}
                 onClick={handleDotClick}
-                className={`w-2 h-2 rounded-full transition-all duration-300 hover:scale-125 ${
+                className={`w-1.5 h-1.5 xs:w-2 xs:h-2 rounded-full transition-all duration-300 hover:scale-125 touch-button ${
                   currentPage === index
                     ? 'bg-gradient-to-r from-blue-400 to-purple-400'
                     : 'bg-gray-600 hover:bg-gray-500'

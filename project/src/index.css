@@ -211,6 +211,61 @@ html {
   }
 }
 
+/* iPhone 15 Plus specific optimizations */
+@media (max-width: 430px) {
+  .iphone-optimized {
+    padding: 0.75rem;
+  }
+  
+  .iphone-text {
+    font-size: 0.8rem;
+    line-height: 1.2rem;
+  }
+  
+  .iphone-card {
+    margin: 0.25rem;
+  }
+}
+
+/* iPhone 15 Plus landscape */
+@media (max-width: 932px) and (orientation: landscape) {
+  .landscape-optimized {
+    padding: 0.5rem;
+  }
+}
+
+/* Touch-friendly button sizes */
+@media (max-width: 768px) {
+  .touch-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .touch-input {
+    min-height: 44px;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Safe area handling for notched devices */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
 /* Focus states for accessibility */
 .focus-ring:focus {
   outline: 2px solid rgba(139, 92, 246, 0.6);

@@ -5,7 +5,7 @@ import ReactFooter from './ReactFooter';
 
 const Layout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white safe-area-top safe-area-bottom">
       <Header />
       <main>
         <Outlet />
