@@ -91,7 +91,6 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
           <h2 className="text-lg xs:text-xl sm:text-xl md:text-2xl lg:text-3xl font-bold text-white">
             {title}
           </h2>
-          <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full animate-pulse"></div>
         </div>
         
         {/* View All Link */}
@@ -106,36 +105,52 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
       </motion.div>
       
       <div className="relative group px-2 xs:px-4 sm:px-6 md:px-12">
-        {/* Left Arrow */}
+        {/* Left Arrow - Enhanced 3D Effect */}
         <AnimatePresence>
           {showLeftArrow && (
             <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              whileHover={{ scale: 1.1 }}
+              initial={{ opacity: 0, x: -20, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -20, scale: 0.8 }}
+              whileHover={{ 
+                scale: 1.15, 
+                rotateY: -15,
+                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.3)"
+              }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('left')}
-              className="absolute -left-1 xs:-left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-6 h-6 xs:w-8 xs:h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20 touch-button"
+              className="absolute -left-1 xs:-left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/30 hover:border-white/60 touch-button perspective-1000"
+              style={{ 
+                transformStyle: 'preserve-3d',
+                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2)'
+              }}
             >
-              <ChevronLeft className="w-3 h-3 xs:w-4 xs:h-4 md:w-6 md:h-6" />
+              <ChevronLeft className="w-4 h-4 xs:w-5 xs:h-5 md:w-7 md:h-7" />
             </motion.button>
           )}
         </AnimatePresence>
 
-        {/* Right Arrow */}
+        {/* Right Arrow - Enhanced 3D Effect */}
         <AnimatePresence>
           {showRightArrow && (
             <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              whileHover={{ scale: 1.1 }}
+              initial={{ opacity: 0, x: 20, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: 20, scale: 0.8 }}
+              whileHover={{ 
+                scale: 1.15, 
+                rotateY: 15,
+                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4), 0 0 60px rgba(139, 92, 246, 0.3)"
+              }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('right')}
-              className="absolute -right-1 xs:-right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-6 h-6 xs:w-8 xs:h-8 md:w-12 md:h-12 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/20 touch-button"
+              className="absolute -right-1 xs:-right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/30 hover:border-white/60 touch-button perspective-1000"
+              style={{ 
+                transformStyle: 'preserve-3d',
+                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2)'
+              }}
             >
-              <ChevronRight className="w-3 h-3 xs:w-4 xs:h-4 md:w-6 md:h-6" />
+              <ChevronRight className="w-4 h-4 xs:w-5 xs:h-5 md:w-7 md:h-7" />
             </motion.button>
           )}
         </AnimatePresence>
@@ -167,8 +182,8 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
           ))}
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="flex justify-center mt-3 xs:mt-4 space-x-1">
+        {/* Small Scroll Indicators */}
+        <div className="flex justify-center mt-3 xs:mt-4 space-x-1.5">
           {Array.from({ length: Math.ceil(movies.length / 6) }).map((_, index) => {
             const container = containerRef.current;
             if (!container) return null;
@@ -186,14 +201,29 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
             };
             
             return (
-              <button
+              <motion.button
                 key={index}
                 onClick={handleDotClick}
-                className={`w-1.5 h-1.5 xs:w-2 xs:h-2 rounded-full transition-all duration-300 hover:scale-125 touch-button ${
+                whileHover={{ 
+                  scale: 1.2, 
+                  rotateZ: 90,
+                  boxShadow: "0 0 10px rgba(59, 130, 246, 0.4)"
+                }}
+                whileTap={{ scale: 0.9 }}
+                className={`rounded-full transition-all duration-300 touch-button ${
                   currentPage === index
-                    ? 'bg-gradient-to-r from-blue-400 to-purple-400'
-                    : 'bg-gray-600 hover:bg-gray-500'
+                    ? 'bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 scale-110 shadow-md shadow-purple-500/30'
+                    : 'bg-gray-600/40 hover:bg-gray-500/60'
                 }`}
+                style={{
+                  width: '6px',
+                  height: '6px',
+                  minWidth: '6px',
+                  minHeight: '6px',
+                  boxShadow: currentPage === index 
+                    ? '0 0 8px rgba(59, 130, 246, 0.3), 0 0 16px rgba(139, 92, 246, 0.2)' 
+                    : 'none'
+                }}
               />
             );
           })}

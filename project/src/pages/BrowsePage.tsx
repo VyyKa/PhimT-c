@@ -153,10 +153,12 @@ const BrowsePage: React.FC = () => {
   const allCategories = ['Tất cả', 'phim-le', 'phim-bo', 'hoat-hinh', 'tv-shows', ...genres.map(g => g.name)];
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white pt-20">
       <div className="px-4 md:px-16 py-8">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">Duyệt phim</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r from-cyan-400 via-blue-300 to-purple-300 bg-clip-text text-transparent">
+            Duyệt phim
+          </h1>
 
           {/* Filters */}
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6 md:mb-8">
@@ -166,7 +168,7 @@ const BrowsePage: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm md:text-base"
+                className="w-full px-3 md:px-4 py-2 md:py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 text-sm md:text-base backdrop-blur-sm"
               >
                 {allCategories.map((category) => (
                   <option key={category} value={category}>
@@ -182,7 +184,7 @@ const BrowsePage: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 md:px-4 py-2 md:py-3 bg-gray-900 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-purple-500 text-sm md:text-base"
+                className="w-full px-3 md:px-4 py-2 md:py-3 bg-slate-800/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 text-sm md:text-base backdrop-blur-sm"
               >
                 <option value="title">Tên phim (A-Z)</option>
                 <option value="year">Năm phát hành (Mới nhất)</option>

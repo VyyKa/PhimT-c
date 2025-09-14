@@ -42,7 +42,7 @@ const FavoritesPage: React.FC = () => {
               genre: (movie.category || []).map((c: any) => c?.name || '').filter(Boolean),
               videoUrl: '',
               category: (movie.category && movie.category[0]?.name) || 'Khác',
-              imdbRating: movie.tmdb?.vote_average ? String(movie.tmdb.vote_average) : undefined
+              imdbRating: movie.tmdb?.vote_average ? parseFloat(movie.tmdb.vote_average) : undefined
             } as Movie;
           } catch (error) {
             console.error(`Failed to fetch movie ${id}:`, error);
@@ -85,19 +85,19 @@ const FavoritesPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white pt-20">
       <div className="px-4 md:px-16 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center space-x-3 mb-8">
             <Heart className="w-8 h-8 text-purple-500 fill-current" />
-            <h1 className="text-3xl md:text-4xl font-bold">Phim yêu thích</h1>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Phim yêu thích</h1>
           </div>
 
           {favoriteMovies.length > 0 ? (
@@ -114,11 +114,11 @@ const FavoritesPage: React.FC = () => {
             </>
           ) : (
             <div className="text-center py-20">
-              <Heart className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-              <div className="text-gray-400 text-lg mb-4">
+              <Heart className="w-16 h-16 text-pink-400 mx-auto mb-4" />
+              <div className="text-white text-lg mb-4 font-medium">
                 Danh sách yêu thích trống
               </div>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-300 mb-6">
                 Thêm phim vào danh sách yêu thích để xem lại sau
               </p>
               <a

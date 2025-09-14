@@ -171,7 +171,9 @@ const Header: React.FC = () => {
                   className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 group ${
                     isActive(item.path) 
                       ? 'text-white bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-purple-500/30' 
-                      : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      : item.path === '/favorites' 
+                        ? 'text-pink-400 hover:text-pink-300 hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10' 
+                        : 'text-gray-300 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{item.name}</span>
@@ -450,7 +452,9 @@ const Header: React.FC = () => {
                     className={`flex items-center px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                       isActive(item.path) 
                         ? 'text-white bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-purple-500/30' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
+                        : item.path === '/favorites' 
+                          ? 'text-pink-400 hover:text-pink-300 hover:bg-gradient-to-r hover:from-pink-500/10 hover:to-purple-500/10' 
+                          : 'text-gray-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <span>{item.name}</span>

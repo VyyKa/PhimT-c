@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Facebook, HelpCircle, Mail, Bug, MessageCircle, Star, Zap, Heart } from 'lucide-react';
+import { HelpCircle, Mail, Bug, MessageCircle } from 'lucide-react';
 
 const ReactFooter: React.FC = () => {
   const { t } = useTranslation();
@@ -43,32 +43,6 @@ const ReactFooter: React.FC = () => {
             </div>
           </div>
           
-          {/* Feature Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:transform hover:scale-105">
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 mb-6 group-hover:shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300">
-                <Star className="w-8 h-8 text-white" />
-              </div>
-              <h4 className="text-white font-bold text-xl mb-3">{t('highQuality')}</h4>
-              <p className="text-gray-400 text-base leading-relaxed">{t('highQualityDesc')}</p>
-            </div>
-            
-            <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:transform hover:scale-105">
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 mb-6 group-hover:shadow-lg group-hover:shadow-purple-500/25 transition-all duration-300">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h4 className="text-white font-bold text-xl mb-3">{t('fastLoading')}</h4>
-              <p className="text-gray-400 text-base leading-relaxed">{t('fastLoadingDesc')}</p>
-            </div>
-            
-            <div className="group flex flex-col items-center text-center p-8 rounded-2xl bg-gradient-to-br from-pink-500/10 to-purple-500/10 border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:transform hover:scale-105">
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-500 mb-6 group-hover:shadow-lg group-hover:shadow-pink-500/25 transition-all duration-300">
-                <Heart className="w-8 h-8 text-white" />
-              </div>
-              <h4 className="text-white font-bold text-xl mb-3">{t('free')}</h4>
-              <p className="text-gray-400 text-base leading-relaxed">{t('freeDesc')}</p>
-            </div>
-          </div>
         </div>
 
         {/* Navigation Links */}
@@ -222,7 +196,7 @@ const ReactFooter: React.FC = () => {
         <div className="border-t border-gradient-to-r from-transparent via-gray-700 to-transparent pt-8">
           <div className="text-center">
             <p className="text-gray-400 text-lg font-medium">
-              &copy; 2025 <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-bold">PhimTộc</span>. {t('copyright')}
+              &copy; 2025 <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-bold">PhimTộc</span>
             </p>
             <div className="mt-4 flex justify-center">
               <div className="w-24 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full"></div>

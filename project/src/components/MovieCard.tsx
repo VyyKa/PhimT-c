@@ -130,11 +130,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
           
           {/* Rating Badge */}
-          <div className="absolute top-1.5 left-1.5 xs:top-2 xs:left-2 md:top-3 md:left-3 z-20">
-            <div className="flex items-center space-x-0.5 xs:space-x-1 px-1 xs:px-1.5 md:px-2 py-0.5 md:py-1 glass-morphism rounded-lg">
+          <div className="absolute top-1.5 left-1.5 xs:top-2 xs:left-2 md:top-3 md:left-3 z-30">
+            <div className="flex items-center space-x-0.5 xs:space-x-1 px-1 xs:px-1.5 md:px-2 py-0.5 md:py-1 glass-morphism rounded-lg backdrop-blur-sm">
               <Star className="w-2 h-2 xs:w-2.5 xs:h-2.5 md:w-3 md:h-3 text-yellow-400 fill-current" />
               <span className="text-white text-xs font-semibold">
-                {movie.imdbRating ? movie.imdbRating.toFixed(1) : 'N/A'}
+                {movie.imdbRating && typeof movie.imdbRating === 'number' ? movie.imdbRating.toFixed(1) : 'N/A'}
               </span>
             </div>
           </div>
@@ -144,7 +144,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleFavoriteClick}
-            className={`absolute top-1.5 right-1.5 xs:top-2 xs:right-2 md:top-3 md:right-3 z-20 p-1 xs:p-1.5 md:p-2 rounded-xl transition-all duration-300 touch-button ${
+            className={`absolute top-1.5 right-1.5 xs:top-2 xs:right-2 md:top-3 md:right-3 z-30 p-1 xs:p-1.5 md:p-2 rounded-xl transition-all duration-300 touch-button ${
               isFavorite 
                 ? 'bg-gradient-to-r from-pink-500 to-red-500 text-white shadow-lg' 
                 : 'glass-morphism text-gray-300 hover:text-white'
@@ -161,7 +161,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/30 flex flex-col justify-between p-2 xs:p-3 sm:p-4"
+                className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-black/30 flex flex-col justify-between p-2 xs:p-3 sm:p-4 overflow-hidden"
               >
                 {/* Top Section - Quick Info */}
                 <div className="flex items-start justify-between">
@@ -175,13 +175,13 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                 </div>
 
                 {/* Center Section - Title & Info */}
-                <div className="flex-1 flex flex-col justify-center space-y-2 md:space-y-3">
-                  <h3 className="text-white font-bold text-xs xs:text-sm sm:text-sm md:text-base leading-tight line-clamp-2">
+                <div className="flex-1 flex flex-col justify-center space-y-1 xs:space-y-1.5 md:space-y-2">
+                  <h3 className="text-white font-bold text-xs xs:text-sm sm:text-sm md:text-base leading-tight line-clamp-2 mb-1">
                     {movie.title}
                   </h3>
 
                   {/* Genres - Compact Pills */}
-                  <div className="flex flex-wrap gap-0.5 xs:gap-1">
+                  <div className="flex flex-wrap gap-0.5 xs:gap-1 mb-1">
                     {movie.genre.slice(0, 2).map((genre, index) => (
                       <span 
                         key={index} 
@@ -199,7 +199,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, size = 'medium' }) => {
                 </div>
 
                 {/* Bottom Section - Action Buttons */}
-                <div className="flex items-center justify-between pt-1 xs:pt-2">
+                <div className="flex items-center justify-between pt-1 xs:pt-2 mt-auto">
                   <div className="flex items-center space-x-1 xs:space-x-1.5 md:space-x-2">
                     {/* Play Button */}
                     <motion.button 

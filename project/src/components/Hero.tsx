@@ -290,18 +290,24 @@ const Hero: React.FC = () => {
       {/* Side fade effects */}
       <div className="absolute top-0 bottom-0 right-0 w-40 bg-gradient-to-l from-slate-900/50 to-transparent" />
 
-      {/* Carousel Indicators - Positioned in top right */}
+      {/* Carousel Indicators - Small and positioned in top right */}
       {featuredMovies.length > 1 && (
-        <div className="absolute top-16 xs:top-20 md:top-32 right-3 xs:right-4 md:right-8 flex flex-col space-y-1.5 xs:space-y-2">
+        <div className="absolute top-16 xs:top-20 md:top-32 right-3 xs:right-4 md:right-8 flex flex-col space-y-1 xs:space-y-1.5">
           {featuredMovies.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`w-1.5 h-1.5 xs:w-2 xs:h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 touch-button ${
+              className={`rounded-full transition-all duration-300 touch-button ${
                 index === currentIndex 
-                  ? 'bg-white scale-125' 
-                  : 'bg-white/50 hover:bg-white/75'
+                  ? 'bg-white scale-110' 
+                  : 'bg-white/40 hover:bg-white/60'
               }`}
+              style={{
+                width: '4px',
+                height: '4px',
+                minWidth: '4px',
+                minHeight: '4px'
+              }}
             />
           ))}
         </div>

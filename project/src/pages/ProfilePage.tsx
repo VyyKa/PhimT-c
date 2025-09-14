@@ -28,10 +28,10 @@ const ProfilePage: React.FC = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white pt-20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 text-white pt-20">
       <div className="px-4 md:px-16 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold mb-8">Hồ sơ người dùng</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-8 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">Hồ sơ người dùng</h1>
 
           <div className="bg-gray-900 rounded-lg p-8">
             <div className="flex items-center justify-between mb-8">
