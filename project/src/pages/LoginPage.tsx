@@ -105,11 +105,7 @@ const LoginPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="mt-4 text-center">
-            <p className="text-gray-500 text-sm">
-              Demo: admin@phimtoc.com / 123456 (Admin) hoặc user@test.com / 123456 (User)
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>

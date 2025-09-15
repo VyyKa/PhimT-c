@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Volume2, VolumeX, Maximize, X } from 'lucide-react';
+import { Play, Maximize, X } from 'lucide-react';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -21,11 +21,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   driveUrl,
   hlsUrl
 }) => {
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentSource, setCurrentSource] = useState<'youtube' | 'drive'>('youtube');
-  const [showSourceInfo, setShowSourceInfo] = useState(false);
+  
   const videoRef = useRef<HTMLIFrameElement>(null);
   const hlsVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,13 +39,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
       }
     };
 
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
       document.body.style.overflow = 'hidden';
       setHasError(false);
       setIsLoading(true);
@@ -70,7 +65,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
@@ -194,7 +188,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             enableWorker: true,
             lowLatencyMode: false,
             // Force fetch loader and strip referrer
-            fetchSetup: (context: any, initParams: any) => {
+            fetchSetup: (_context: any, initParams: any) => {
               const next = { ...initParams, referrerPolicy: 'no-referrer' };
               return next;
             },
@@ -208,6 +202,21 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
             const lvls = hls.levels.map((l: any, i: number) => ({ index: i, height: l.height }));
             setLevels(lvls);
+            // Default to highest quality
+            try {
+              if (Array.isArray(hls.levels) && hls.levels.length > 0) {
+                const highest = hls.levels.length - 1;
+                hls.currentLevel = highest;
+              }
+            } catch {}
+          });
+          // Fallback to Auto if fatal error occurs
+          hls.on(Hls.Events.ERROR, (_e: any, data: any) => {
+            try {
+              if (data?.fatal) {
+                hls.currentLevel = -1;
+              }
+            } catch {}
           });
           hlsInstanceRef.current = hls;
         }

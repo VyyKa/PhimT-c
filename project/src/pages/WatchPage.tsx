@@ -70,6 +70,23 @@ const WatchPage: React.FC = () => {
           const hls = new Hls({ maxBufferLength: 60, enableWorker: true });
           hls.loadSource(src);
           hls.attachMedia(el);
+          // Prefer highest quality by default once manifest is parsed
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            try {
+              if (Array.isArray(hls.levels) && hls.levels.length > 0) {
+                const highest = hls.levels.length - 1;
+                hls.currentLevel = highest;
+              }
+            } catch {}
+          });
+          // Simple fallback: if there is a fatal media error, revert to Auto
+          hls.on(Hls.Events.ERROR, (_event: any, data: any) => {
+            try {
+              if (data?.fatal) {
+                hls.currentLevel = -1; // Auto
+              }
+            } catch {}
+          });
           destroy = () => hls.destroy();
         }
       } catch {}
