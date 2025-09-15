@@ -121,18 +121,18 @@ const WatchPage: React.FC = () => {
 
   return (
     <div className={`min-h-screen text-white pt-24 px-4 md:px-16 ${lightsOff ? 'bg-black overflow-hidden' : 'bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900'}`}>
-      {/* Lights Off overlay */}
+      {/* Lights Off overlay - only darkens background, not controls */}
       {lightsOff && (
-        <div className="fixed inset-0 bg-black/95 z-40 transition-opacity"></div>
+        <div className="fixed inset-0 bg-black/80 z-40 transition-opacity pointer-events-none"></div>
       )}
 
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-6xl mx-auto relative z-50">
         <div className="mb-4 flex items-center gap-2 text-sm">
           <Link to={`/movie/${id}`} className="px-3 py-1 rounded border border-gray-600 hover:bg-white/10">← Chi tiết</Link>
           <div className="opacity-80 flex-1 truncate">{movie?.name || movie?.origin_name}</div>
           <button
             onClick={() => setLightsOff(prev => !prev)}
-            className={`px-3 py-1 rounded-lg border text-sm transition-all duration-300 ${
+            className={`px-3 py-1 rounded-lg border text-sm transition-all duration-300 relative z-[60] ${
               lightsOff ? 'bg-yellow-400/20 border-yellow-400 text-yellow-300 hover:bg-yellow-400/30' : 'border-gray-600 hover:bg-white/10'
             }`}
             title="Nhấn L để bật/tắt đèn"
@@ -141,7 +141,7 @@ const WatchPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-gradient-to-b from-gray-900/80 to-black rounded-xl overflow-hidden border border-gray-700 shadow-2xl">
+        <div className="bg-gradient-to-b from-gray-900/80 to-black rounded-xl overflow-hidden border border-gray-700 shadow-2xl relative z-[60]">
           {isM3U8 ? (
             <video
               ref={videoRef}
@@ -191,7 +191,7 @@ const WatchPage: React.FC = () => {
         </div>
 
         {/* Server/Episode selectors */}
-        <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 mt-6">
+        <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 mt-6 relative z-[60]">
           <div>
             <div className="font-semibold mb-2">Chọn server</div>
             <div className="flex flex-wrap gap-2">
@@ -212,7 +212,7 @@ const WatchPage: React.FC = () => {
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-12 relative z-[60]">
             <MovieRow title="Phim đề xuất cho bạn" movies={recommendations} />
           </div>
         )}
