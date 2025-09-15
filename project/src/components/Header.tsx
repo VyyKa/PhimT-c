@@ -258,13 +258,13 @@ const Header: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full right-0 mt-2 w-72 xs:w-80 glass-morphism rounded-2xl shadow-2xl overflow-hidden z-50"
+                    className="absolute top-full right-0 mt-2 w-72 xs:w-80 rounded-2xl shadow-2xl overflow-hidden z-50 bg-slate-900/90 backdrop-blur-md border border-purple-500/30"
                   >
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
                         <h3 className="text-white font-semibold text-sm">Thông báo</h3>
                         {unreadCount > 0 && (
-                          <span className="text-xs text-purple-400 bg-purple-500/20 px-2 py-1 rounded-full">
+                          <span className="text-xs text-purple-300 bg-purple-500/30 px-2 py-1 rounded-full">
                             {unreadCount} mới
                           </span>
                         )}
@@ -278,16 +278,16 @@ const Header: React.FC = () => {
                               onClick={() => handleNotificationClick(notification)}
                               className={`w-full p-3 rounded-lg border transition-all duration-200 text-left ${
                                 notification.read 
-                                  ? 'bg-gray-800/50 border-gray-700/50' 
-                                  : 'bg-purple-500/10 border-purple-500/20 hover:bg-purple-500/20'
+                                  ? 'bg-gray-800/70 border-gray-700 text-gray-300' 
+                                  : 'bg-purple-500/25 border-purple-500/40 hover:bg-purple-500/35 text-white'
                               }`}
                             >
                               <div className="flex items-start space-x-3">
-                                <div className={`p-1.5 rounded-lg ${
+                                <div className={`${
                                   notification.type === 'movie_update' 
-                                    ? 'bg-blue-500/20 text-blue-400' 
-                                    : 'bg-purple-500/20 text-purple-400'
-                                }`}>
+                                    ? 'bg-blue-500/30 text-blue-300' 
+                                    : 'bg-purple-500/30 text-purple-300'
+                                } p-1.5 rounded-lg`}>
                                   {notification.type === 'movie_update' ? (
                                     <Film className="w-3 h-3" />
                                   ) : (
@@ -298,12 +298,12 @@ const Header: React.FC = () => {
                                   <p className="text-white text-xs font-medium truncate">
                                     {notification.title}
                                   </p>
-                                  <p className="text-gray-400 text-xs mt-1 line-clamp-2">
+                                  <p className="text-gray-300 text-xs mt-1 line-clamp-2">
                                     {notification.message}
                                   </p>
                                   <div className="flex items-center space-x-1 mt-2">
-                                    <Clock className="w-3 h-3 text-gray-500" />
-                                    <span className="text-gray-500 text-xs">
+                                    <Clock className="w-3 h-3 text-gray-400" />
+                                    <span className="text-gray-400 text-xs">
                                       {notification.timestamp.toLocaleDateString('vi-VN')}
                                     </span>
                                   </div>
@@ -317,7 +317,7 @@ const Header: React.FC = () => {
                         </div>
                       ) : (
                         <div className="text-center py-8">
-                          <Bell className="w-8 h-8 text-gray-600 mx-auto mb-2" />
+                          <Bell className="w-8 h-8 text-gray-500 mx-auto mb-2" />
                           <p className="text-gray-400 text-sm">Không có thông báo mới</p>
                         </div>
                       )}

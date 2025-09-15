@@ -15,6 +15,7 @@ const WatchPage: React.FC = () => {
   const { user } = useAuth();
 
   const [state, setState] = React.useState<any>({ loading: true, error: null, detail: null });
+  const [lightsOff, setLightsOff] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     // Scroll to top when component mounts
@@ -33,6 +34,16 @@ const WatchPage: React.FC = () => {
     })();
     return () => { cancelled = true; };
   }, [id]);
+
+  // Lights off keyboard shortcut (L)
+  React.useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key.toLowerCase() === 'l') setLightsOff(prev => !prev);
+      if (e.key === 'Escape') setLightsOff(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const { src, isM3U8, movie, episodes } = useMemo(() => {
     const d = state.detail || {};
@@ -109,14 +120,28 @@ const WatchPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen text-white pt-24 px-4 md:px-16">
-      <div className="max-w-6xl mx-auto">
+    <div className={`min-h-screen text-white pt-24 px-4 md:px-16 ${lightsOff ? 'bg-black overflow-hidden' : 'bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900'}`}>
+      {/* Lights Off overlay */}
+      {lightsOff && (
+        <div className="fixed inset-0 bg-black/95 z-40 transition-opacity"></div>
+      )}
+
+      <div className="max-w-6xl mx-auto relative z-10">
         <div className="mb-4 flex items-center gap-2 text-sm">
           <Link to={`/movie/${id}`} className="px-3 py-1 rounded border border-gray-600 hover:bg-white/10">← Chi tiết</Link>
-          <div className="opacity-80">{movie?.name || movie?.origin_name}</div>
+          <div className="opacity-80 flex-1 truncate">{movie?.name || movie?.origin_name}</div>
+          <button
+            onClick={() => setLightsOff(prev => !prev)}
+            className={`px-3 py-1 rounded-lg border text-sm transition-all duration-300 ${
+              lightsOff ? 'bg-yellow-400/20 border-yellow-400 text-yellow-300 hover:bg-yellow-400/30' : 'border-gray-600 hover:bg-white/10'
+            }`}
+            title="Nhấn L để bật/tắt đèn"
+          >
+            {lightsOff ? 'Bật đèn' : 'Tắt đèn'}
+          </button>
         </div>
 
-        <div className="bg-black rounded-xl overflow-hidden border border-gray-700">
+        <div className="bg-gradient-to-b from-gray-900/80 to-black rounded-xl overflow-hidden border border-gray-700 shadow-2xl">
           {isM3U8 ? (
             <video
               ref={videoRef}

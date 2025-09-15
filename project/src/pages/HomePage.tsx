@@ -19,34 +19,87 @@ const HomePage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
     let cancelled = false;
-    (async () => {
+
+    const mapItems = (items: any[]): Movie[] =>
+      (items || []).map((it: any) => ({
+        id: it.slug || it._id,
+        title: it.name,
+        description: '',
+        image: phimapiService.formatImage(it.poster_url || it.thumb_url),
+        backdropImage: it.thumb_url || undefined,
+        year: String(it.year || ''),
+        rating: '',
+        duration: '',
+        genre: (it.category || []).map((c: any) => c?.name || '').filter(Boolean),
+        videoUrl: '',
+        category: (it.category && it.category[0]?.name) || 'Khác',
+        imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined
+      }));
+
+    const buildSections = async () => {
       try {
-        const [phimLe, phimBo, hoatHinh, tvShows] = await Promise.all([
-          phimapiService.getList('phim-le', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc' }),
-          phimapiService.getList('phim-bo', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc' }),
+        const currentYear = new Date().getFullYear();
+        const commonParams = { page: 1, limit: 32, sort_field: 'modified.time' as const, sort_type: 'desc' as const };
+
+        // Only single movies (phim-le)
+        let latest: any[] = [];
+        try {
+          const y1 = await phimapiService.getYearDetail(currentYear, { ...commonParams, category: 'phim-le' });
+          latest = y1?.data?.items || [];
+        } catch {}
+
+        if (!latest || latest.length < 18) {
+          try {
+            const y0 = await phimapiService.getYearDetail(currentYear - 1, { ...commonParams, category: 'phim-le' });
+            latest = [ ...(latest || []), ...(y0?.data?.items || []) ];
+          } catch {}
+        }
+
+        // Fallback: newly updated list restricted to phim-le
+        if (!latest || latest.length < 18) {
+          try {
+            const le = await phimapiService.getList('phim-le', commonParams);
+            latest = [ ...(latest || []), ...(le?.data?.items || []) ];
+          } catch {}
+        }
+
+        // Dedupe and sort by release year desc then by modified/time (best effort)
+        const seen = new Set<string>();
+        latest = (latest || []).filter((it: any) => {
+          const key = it.slug || it._id;
+          if (!key || seen.has(key)) return false;
+          seen.add(key);
+          return true;
+        }).sort((a: any, b: any) => {
+          const ay = parseInt(a.year || '0', 10);
+          const by = parseInt(b.year || '0', 10);
+          if (by !== ay) return by - ay;
+          const am = a?.modified?.time ? Number(a.modified.time) : 0;
+          const bm = b?.modified?.time ? Number(b.modified.time) : 0;
+          return bm - am;
+        });
+
+        // Prioritize US/Europe movies
+        const preferredNames = ['Mỹ', 'Âu Mỹ', 'Anh', 'Vương Quốc Anh', 'Canada', 'Pháp', 'Đức', 'Tây Ban Nha', 'Ý', 'Hà Lan', 'Thụy Điển', 'Na Uy', 'Đan Mạch', 'Nga'];
+        const isPreferred = (it: any) => {
+          const countries = (it.country || []).map((c: any) => (c?.name || '').trim());
+          return countries.some((n: string) => preferredNames.includes(n));
+        };
+        const preferred = latest.filter(isPreferred);
+        const others = latest.filter((it: any) => !isPreferred(it));
+        latest = [...preferred, ...others].slice(0, 18);
+
+        const [hoatHinh, tvShows, vietLe] = await Promise.all([
           phimapiService.getList('hoat-hinh', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc' }),
-          phimapiService.getList('tv-shows', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc' })
+          phimapiService.getList('tv-shows', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc' }),
+          // Vietnamese single movies
+          phimapiService.getList('phim-le', { page: 1, limit: 18, sort_field: 'modified.time', sort_type: 'desc', country: 'viet-nam' })
         ]);
 
-        const mapItems = (items: any[]): Movie[] =>
-          (items || []).map((it: any) => ({
-            id: it.slug || it._id,
-            title: it.name,
-            description: '',
-            image: phimapiService.formatImage(it.poster_url || it.thumb_url),
-            backdropImage: it.thumb_url || undefined,
-            year: String(it.year || ''),
-            rating: '',
-            duration: '',
-            genre: (it.category || []).map((c: any) => c?.name || '').filter(Boolean),
-            videoUrl: '',
-            category: (it.category && it.category[0]?.name) || 'Khác',
-            imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined
-          }));
-
         const newSections = [
-          { title: 'Phim mới cập nhật', movies: mapItems(phimLe.data?.items || []) },
-          { title: `${t('trendingNow') || 'Phim bộ'}`, movies: mapItems(phimBo.data?.items || []) },
+          { title: 'Phim Lẻ mới tinh', movies: mapItems(latest) },
+          { title: 'Phim Việt Lẻ mới', movies: mapItems(vietLe.data?.items || []) },
+          // Removed 'Thịnh hành' (phim bộ) section as requested
           { title: `Anime`, movies: mapItems(hoatHinh.data?.items || []) },
           { title: `TV Shows`, movies: mapItems(tvShows.data?.items || []) }
         ];
@@ -55,9 +108,16 @@ const HomePage: React.FC = () => {
       } catch (e) {
         if (!cancelled) setSections([]);
       }
-    })();
+    };
+
+    buildSections();
+
+    // Auto-refresh the latest section periodically (every 5 minutes)
+    const interval = setInterval(buildSections, 5 * 60 * 1000);
+
     return () => {
       cancelled = true;
+      clearInterval(interval);
     };
   }, [t]);
 
