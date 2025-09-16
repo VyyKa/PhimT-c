@@ -26,15 +26,16 @@ const Hero: React.FC = () => {
           rating: it.quality || '',
           imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined,
           genre: (it.category || []).map((c: any) => c?.name || ''),
-          category: (it.category && it.category[0]?.name) || 'Mới cập nhật'
+          category: (it.category && it.category[0]?.name) || 'Hot'
         });
 
         let movies: any[] = [];
         
-        // Try to get multiple movies from different sources
+        // Get hot/trending movies and series
         try {
-          const r1 = await phimapiService.getNewlyUpdated(1, 'v3');
-          const items1 = (r1?.data?.items || []).slice(0, 5);
+          // Get hot TV shows (Wednesday, F1, etc.)
+          const r1 = await phimapiService.getList('tv-shows', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+          const items1 = (r1?.data?.items || []).slice(0, 2);
           movies = items1.map(transformMovie);
         } catch {
           // Fallback to empty array
@@ -42,8 +43,9 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            const r2 = await phimapiService.getNewlyUpdated(1, 'v2');
-            const items2 = (r2?.data?.items || []).slice(0, 5);
+            // Get hot anime (Naruto, One Piece, etc.)
+            const r2 = await phimapiService.getList('hoat-hinh', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            const items2 = (r2?.data?.items || []).slice(0, 2);
             const newMovies = items2.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
           } catch {
@@ -53,8 +55,9 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            const r3 = await phimapiService.getList('phim-le', { page: 1, limit: 5, sort_field: 'modified.time', sort_type: 'desc' });
-            const items3 = (r3?.data?.items || []).slice(0, 5);
+            // Get hot phim-bo (popular series)
+            const r3 = await phimapiService.getList('phim-bo', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            const items3 = (r3?.data?.items || []).slice(0, 2);
             const newMovies = items3.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
           } catch {
@@ -64,8 +67,9 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            const r4 = await phimapiService.getList('phim-bo', { page: 1, limit: 5, sort_field: 'modified.time', sort_type: 'desc' });
-            const items4 = (r4?.data?.items || []).slice(0, 5);
+            // Get hot phim-le (popular movies)
+            const r4 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            const items4 = (r4?.data?.items || []).slice(0, 2);
             const newMovies = items4.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
           } catch {
@@ -149,7 +153,7 @@ const Hero: React.FC = () => {
           >
             <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-full text-sm font-medium text-purple-300">
               <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2 animate-pulse"></span>
-              {currentMovie?.category || 'Mới cập nhật'}
+              {currentMovie?.category || 'Hot'}
             </span>
           </motion.div>
 
