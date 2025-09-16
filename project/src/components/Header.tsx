@@ -259,7 +259,7 @@ const Header: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -10, scale: 0.95 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute top-full right-0 mt-2 w-72 xs:w-80 rounded-2xl shadow-2xl overflow-hidden z-50 bg-slate-900/90 backdrop-blur-md border border-purple-500/30"
+                    className="absolute top-full right-0 mt-2 w-72 xs:w-80 rounded-2xl shadow-2xl overflow-hidden z-50 bg-slate-900/95 backdrop-blur-md border border-purple-400/50"
                   >
                     <div className="p-4">
                       <div className="flex items-center justify-between mb-3">
@@ -358,10 +358,10 @@ const Header: React.FC = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute top-full right-0 mt-2 w-48 xs:w-56 glass-morphism rounded-2xl shadow-2xl overflow-hidden z-50"
+                      className="absolute top-full right-0 mt-2 w-48 xs:w-56 bg-slate-900/95 backdrop-blur-md border border-purple-400/50 rounded-2xl shadow-2xl overflow-hidden z-50"
                     >
                       <div className="py-2">
-                        <div className="px-4 py-3 border-b border-purple-500/20 bg-gradient-to-r from-blue-600/10 to-purple-600/10">
+                        <div className="px-4 py-3 border-b border-purple-400/40 bg-gradient-to-r from-blue-500/30 to-purple-500/30">
                           <p className="text-white font-semibold text-sm">{user.name}</p>
                           <p className="text-gray-400 text-xs truncate">{user.email}</p>
                           {user.isAdmin && (
