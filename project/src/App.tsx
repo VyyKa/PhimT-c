@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from 'react-hot-toast';
@@ -46,19 +45,23 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/faq" element={<FAQPage />} />
             
-            {/* Protected Routes */}
+            {/* Public Routes with Layout */}
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="movie/:id" element={<MovieDetailPage />} />
+              <Route path="search" element={<SearchPage />} />
+              <Route path="browse" element={<BrowsePage />} />
+              <Route path="watch/:id" element={<WatchPage />} />
+            </Route>
+            
+            {/* Protected Routes - Only for user-specific features */}
             <Route path="/" element={
               <ProtectedRoute>
                 <Layout />
               </ProtectedRoute>
             }>
-              <Route index element={<HomePage />} />
-              <Route path="movie/:id" element={<MovieDetailPage />} />
-              <Route path="search" element={<SearchPage />} />
-              <Route path="browse" element={<BrowsePage />} />
               <Route path="favorites" element={<FavoritesPage />} />
               <Route path="profile" element={<ProfilePage />} />
-              <Route path="watch/:id" element={<WatchPage />} />
               <Route path="admin" element={
                 <ProtectedRoute adminOnly>
                   <AdminPage />

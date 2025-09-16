@@ -31,7 +31,8 @@ const Header: React.FC = () => {
   const navItems = [
     { name: t('home'), path: '/' },
     { name: t('browse'), path: '/browse' },
-    { name: t('favorites'), path: '/favorites' },
+
+    ...(user ? [{ name: t('favorites'), path: '/favorites' }] : []),
   ];
 
   const handleLogout = () => {
@@ -64,7 +65,7 @@ const Header: React.FC = () => {
           ];
           
           // Create notifications for new movies
-          const newNotifications: Notification[] = allMovies.slice(0, 5).map((movie: any, index: number) => ({
+          const newNotifications: Notification[] = allMovies.slice(0, 5).map((movie: any) => ({
             id: `movie-${movie.slug || movie._id}`,
             type: 'movie_update' as const,
             title: t('newMovieAdded'),
@@ -328,92 +329,114 @@ const Header: React.FC = () => {
             </motion.div>
 
             {/* Profile Dropdown */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.8 }}
-              className="relative profile-dropdown"
-            >
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center space-x-1 md:space-x-2 p-1.5 md:p-2 rounded-xl hover:bg-white/5 transition-all duration-300 group"
+            {user ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8 }}
+                className="relative profile-dropdown"
               >
-                <div className="relative">
-                  <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <User className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-white" />
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center space-x-1 md:space-x-2 p-1.5 md:p-2 rounded-xl hover:bg-white/5 transition-all duration-300 group"
+                >
+                  <div className="relative">
+                    <div className="w-6 h-6 xs:w-7 xs:h-7 sm:w-7 sm:h-7 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <User className="w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 text-white" />
+                    </div>
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
                   </div>
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-gray-300 transition-all duration-300 ${isProfileOpen ? 'rotate-180 text-white' : 'group-hover:text-white'} hidden sm:block`} />
-              </motion.button>
+                  <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-gray-300 transition-all duration-300 ${isProfileOpen ? 'rotate-180 text-white' : 'group-hover:text-white'} hidden sm:block`} />
+                </motion.button>
 
-              <AnimatePresence>
-                {isProfileOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full right-0 mt-2 w-48 xs:w-56 glass-morphism rounded-2xl shadow-2xl overflow-hidden z-50"
-                  >
-                    <div className="py-2">
-                      <div className="px-4 py-3 border-b border-purple-500/20 bg-gradient-to-r from-blue-600/10 to-purple-600/10">
-                        <p className="text-white font-semibold text-sm">{user?.name}</p>
-                        <p className="text-gray-400 text-xs truncate">{user?.email}</p>
-                        {user?.isAdmin && (
-                          <span className="inline-block mt-1 px-2 py-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-medium rounded-full">
-                            Admin
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="py-1">
-                        <Link
-                          to="/profile"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 group"
-                        >
-                          <Settings className="w-4 h-4 group-hover:text-blue-400 transition-colors" />
-                          <span className="text-sm">Hồ sơ</span>
-                        </Link>
+                <AnimatePresence>
+                  {isProfileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full right-0 mt-2 w-48 xs:w-56 glass-morphism rounded-2xl shadow-2xl overflow-hidden z-50"
+                    >
+                      <div className="py-2">
+                        <div className="px-4 py-3 border-b border-purple-500/20 bg-gradient-to-r from-blue-600/10 to-purple-600/10">
+                          <p className="text-white font-semibold text-sm">{user.name}</p>
+                          <p className="text-gray-400 text-xs truncate">{user.email}</p>
+                          {user.isAdmin && (
+                            <span className="inline-block mt-1 px-2 py-0.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-black text-xs font-medium rounded-full">
+                              Admin
+                            </span>
+                          )}
+                        </div>
                         
-                        <Link
-                          to="/favorites"
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 group"
-                        >
-                          <Heart className="w-4 h-4 group-hover:text-pink-400 transition-colors" />
-                          <span className="text-sm">Yêu thích</span>
-                        </Link>
-
-                        {user?.isAdmin && (
+                        <div className="py-1">
                           <Link
-                            to="/admin"
+                            to="/profile"
                             onClick={() => setIsProfileOpen(false)}
                             className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 group"
                           >
-                            <Film className="w-4 h-4 group-hover:text-purple-400 transition-colors" />
-                            <span className="text-sm">Quản trị</span>
+                            <Settings className="w-4 h-4 group-hover:text-blue-400 transition-colors" />
+                            <span className="text-sm">Hồ sơ</span>
                           </Link>
-                        )}
+                          
+                          <Link
+                            to="/favorites"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 group"
+                          >
+                            <Heart className="w-4 h-4 group-hover:text-pink-400 transition-colors" />
+                            <span className="text-sm">Yêu thích</span>
+                          </Link>
+
+                          {user.isAdmin && (
+                            <Link
+                              to="/admin"
+                              onClick={() => setIsProfileOpen(false)}
+                              className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 group"
+                            >
+                              <Film className="w-4 h-4 group-hover:text-purple-400 transition-colors" />
+                              <span className="text-sm">Quản trị</span>
+                            </Link>
+                          )}
+                        </div>
+                        
+                        <div className="border-t border-purple-500/20 pt-1">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-red-400 hover:bg-red-500/5 transition-all duration-200 w-full text-left group"
+                          >
+                            <LogOut className="w-4 h-4 group-hover:text-red-400 transition-colors" />
+                            <span className="text-sm">Đăng xuất</span>
+                          </button>
+                        </div>
                       </div>
-                      
-                      <div className="border-t border-purple-500/20 pt-1">
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center space-x-3 px-4 py-2.5 text-gray-300 hover:text-red-400 hover:bg-red-500/5 transition-all duration-200 w-full text-left group"
-                        >
-                          <LogOut className="w-4 h-4 group-hover:text-red-400 transition-colors" />
-                          <span className="text-sm">Đăng xuất</span>
-                        </button>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.8 }}
+                className="flex items-center space-x-2"
+              >
+                <Link
+                  to="/login"
+                  className="px-3 py-1.5 text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-all duration-300"
+                >
+                  Đăng nhập
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-3 py-1.5 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg transition-all duration-300"
+                >
+                  Đăng ký
+                </Link>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>
