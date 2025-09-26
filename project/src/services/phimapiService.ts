@@ -22,19 +22,21 @@ export interface PhimApiListResponse {
 
 const BASE = 'https://phimapi.com';
 
-// Simple in-memory cache
+// Enhanced in-memory cache with longer duration for featured movies
 const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes for better performance
+const FEATURED_CACHE_DURATION = 30 * 60 * 1000; // 30 minutes for featured movies
 
-function getCachedData(key: string) {
+function getCachedData(key: string, isFeatured = false) {
   const cached = cache.get(key);
-  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+  const duration = isFeatured ? FEATURED_CACHE_DURATION : CACHE_DURATION;
+  if (cached && Date.now() - cached.timestamp < duration) {
     return cached.data;
   }
   return null;
 }
 
-function setCachedData(key: string, data: any) {
+function setCachedData(key: string, data: any, isFeatured = false) {
   cache.set(key, { data, timestamp: Date.now() });
 }
 
@@ -51,10 +53,10 @@ async function httpGet<T>(url: string): Promise<T> {
   return res.json();
 }
 
-// Search movies by keyword (v1) with caching
-export async function searchMovies(keyword: string, page = 1, limit = 12): Promise<PhimApiItem[]> {
+// Search movies by keyword (v1) with enhanced caching
+export async function searchMovies(keyword: string, page = 1, limit = 12, isFeatured = false): Promise<PhimApiItem[]> {
   const cacheKey = `search_${keyword}_${page}_${limit}`;
-  const cached = getCachedData(cacheKey);
+  const cached = getCachedData(cacheKey, isFeatured);
   if (cached) return cached;
   
   const url = `${BASE}/v1/api/tim-kiem?keyword=${encodeURIComponent(keyword)}&page=${page}&limit=${limit}`;
@@ -62,7 +64,7 @@ export async function searchMovies(keyword: string, page = 1, limit = 12): Promi
   const items = data?.data?.items || data?.items || [];
   const result = items as PhimApiItem[];
   
-  setCachedData(cacheKey, result);
+  setCachedData(cacheKey, result, isFeatured);
   return result;
 }
 

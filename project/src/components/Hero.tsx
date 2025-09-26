@@ -10,10 +10,11 @@ const Hero: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const { t } = useTranslation();
 
-  // Fetch multiple movies for carousel
+  // Search for specific movies from API with optimization
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    
+    const searchSpecificMovies = async () => {
       try {
         const transformMovie = (it: any) => ({
           id: it.slug || it._id,
@@ -26,78 +27,61 @@ const Hero: React.FC = () => {
           rating: it.quality || '',
           imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined,
           genre: (it.category || []).map((c: any) => c?.name || ''),
-          category: (it.category && it.category[0]?.name) || 'Châu Âu'
+          category: (it.category && it.category[0]?.name) || 'Khác'
         });
 
-        let movies: any[] = [];
-        
-        // Get European movies from different countries
-        
-        try {
-          // Get movies from UK (Anh)
-          const r1 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'anh' });
-          const items1 = (r1?.data?.items || []).slice(0, 2);
-          movies = items1.map(transformMovie);
-        } catch {
-          // Fallback to empty array
-        }
-        
-        if (movies.length < 3) {
+        // Parallel search for faster loading with enhanced caching
+        const searchPromises = [
+          // Search for specific movies in parallel with featured cache
+          phimapiService.search({ keyword: 'Exit 8', page: 1, limit: 3 }),
+          phimapiService.search({ keyword: 'F1', page: 1, limit: 3 }),
+          phimapiService.search({ keyword: 'Mất tích', page: 1, limit: 3 }),
+          phimapiService.search({ keyword: 'Thanh gươm diệt quỷ', page: 1, limit: 3 })
+        ];
+
+        // Execute all searches in parallel
+        const results = await Promise.allSettled(searchPromises);
+        const foundMovies: any[] = [];
+
+        // Process results
+        results.forEach((result, index) => {
+          if (result.status === 'fulfilled' && result.value.data?.items?.length > 0) {
+            const movie = transformMovie(result.value.data.items[0]);
+            foundMovies.push(movie);
+          }
+        });
+
+        // If we don't have enough movies, get recent ones as fallback
+        if (foundMovies.length < 2) {
           try {
-            // Get movies from France (Pháp)
-            const r2 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'phap' });
-            const items2 = (r2?.data?.items || []).slice(0, 2);
-            const newMovies = items2.map(transformMovie);
-            movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
-          } catch {
-          // Fallback to empty array
-        }
-        }
-        
-        if (movies.length < 3) {
-          try {
-            // Get movies from Germany (Đức)
-            const r3 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'duc' });
-            const items3 = (r3?.data?.items || []).slice(0, 2);
-            const newMovies = items3.map(transformMovie);
-            movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
-          } catch {
-          // Fallback to empty array
-        }
-        }
-        
-        if (movies.length < 3) {
-          try {
-            // Get movies from Italy (Ý)
-            const r4 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'y' });
-            const items4 = (r4?.data?.items || []).slice(0, 2);
-            const newMovies = items4.map(transformMovie);
-            movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
-          } catch {
-          // Fallback to empty array
-        }
-        }
-        
-        if (movies.length < 3) {
-          try {
-            // Get movies from Spain (Tây Ban Nha)
-            const r5 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'tay-ban-nha' });
-            const items5 = (r5?.data?.items || []).slice(0, 2);
-            const newMovies = items5.map(transformMovie);
-            movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
-          } catch {
-          // Fallback to empty array
-        }
+            const recentMovies = await phimapiService.getList('phim-le', { 
+              page: 1, 
+              limit: 4, 
+              sort_field: 'modified.time', 
+              sort_type: 'desc' 
+            });
+            
+            const recentItems = (recentMovies.data?.items || []).slice(0, 4 - foundMovies.length);
+            const recentTransformed = recentItems.map(transformMovie);
+            foundMovies.push(...recentTransformed);
+          } catch (error) {
+            console.log('Không thể lấy phim mới');
+          }
         }
 
-        if (!cancelled && movies.length > 0) {
-          setFeaturedMovies(movies);
+        if (!cancelled && foundMovies.length > 0) {
+          setFeaturedMovies(foundMovies);
         }
-      } catch {
-        // Fallback to empty array
+      } catch (error) {
+        console.error('Lỗi khi tìm kiếm phim:', error);
       }
-    })();
-    return () => { cancelled = true; };
+    };
+
+    searchSpecificMovies();
+    
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Auto-rotate movies every 8 seconds
