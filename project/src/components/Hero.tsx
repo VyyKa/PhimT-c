@@ -26,15 +26,16 @@ const Hero: React.FC = () => {
           rating: it.quality || '',
           imdbRating: it.tmdb?.vote_average ? parseFloat(it.tmdb.vote_average) : undefined,
           genre: (it.category || []).map((c: any) => c?.name || ''),
-          category: (it.category && it.category[0]?.name) || 'Hot'
+          category: (it.category && it.category[0]?.name) || 'Châu Âu'
         });
 
         let movies: any[] = [];
         
-        // Get hot/trending movies and series
+        // Get European movies from different countries
+        
         try {
-          // Get hot TV shows (Wednesday, F1, etc.)
-          const r1 = await phimapiService.getList('tv-shows', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+          // Get movies from UK (Anh)
+          const r1 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'anh' });
           const items1 = (r1?.data?.items || []).slice(0, 2);
           movies = items1.map(transformMovie);
         } catch {
@@ -43,8 +44,8 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            // Get hot anime (Naruto, One Piece, etc.)
-            const r2 = await phimapiService.getList('hoat-hinh', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            // Get movies from France (Pháp)
+            const r2 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'phap' });
             const items2 = (r2?.data?.items || []).slice(0, 2);
             const newMovies = items2.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
@@ -55,8 +56,8 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            // Get hot phim-bo (popular series)
-            const r3 = await phimapiService.getList('phim-bo', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            // Get movies from Germany (Đức)
+            const r3 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'duc' });
             const items3 = (r3?.data?.items || []).slice(0, 2);
             const newMovies = items3.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
@@ -67,10 +68,22 @@ const Hero: React.FC = () => {
         
         if (movies.length < 3) {
           try {
-            // Get hot phim-le (popular movies)
-            const r4 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc' });
+            // Get movies from Italy (Ý)
+            const r4 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'y' });
             const items4 = (r4?.data?.items || []).slice(0, 2);
             const newMovies = items4.map(transformMovie);
+            movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
+          } catch {
+          // Fallback to empty array
+        }
+        }
+        
+        if (movies.length < 3) {
+          try {
+            // Get movies from Spain (Tây Ban Nha)
+            const r5 = await phimapiService.getList('phim-le', { page: 1, limit: 8, sort_field: 'year', sort_type: 'desc', country: 'tay-ban-nha' });
+            const items5 = (r5?.data?.items || []).slice(0, 2);
+            const newMovies = items5.map(transformMovie);
             movies = [...movies, ...newMovies.filter(m => !movies.some(existing => existing.id === m.id))];
           } catch {
           // Fallback to empty array
@@ -153,7 +166,7 @@ const Hero: React.FC = () => {
           >
             <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-full text-sm font-medium text-purple-300">
               <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2 animate-pulse"></span>
-              {currentMovie?.category || 'Hot'}
+              {currentMovie?.category || 'Châu Âu'}
             </span>
           </motion.div>
 
