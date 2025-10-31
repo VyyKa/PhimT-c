@@ -1,4 +1,3 @@
-```markdown
 # PhimT-c
 
 Web xem phim thế hệ mới!  
@@ -107,6 +106,3 @@ Miễn phí sử dụng — MIT License. (Nếu muốn dùng giấy phép khác,
 ## Liên hệ
 - Tác giả / maintainer: @VyyKa
 - Mô tả repo: Web xem phim thế hệ mới!
-
-Gợi ý tiếp theo: thêm file .env.example, cấu hình CI (GitHub Actions) để build và test tự động, và một CONTRIBUTING.md chi tiết nếu dự án có nhiều cộng tác viên.
-```
