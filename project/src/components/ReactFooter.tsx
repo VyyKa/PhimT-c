@@ -26,21 +26,6 @@ const ReactFooter: React.FC = () => {
             <p className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8">
               {t('websiteDescription2')}
             </p>
-            
-            {/* Demo Info */}
-            <div className="inline-flex items-center px-6 py-3 bg-gray-800/50 backdrop-blur-sm rounded-full border border-gray-700/50">
-              <p className="text-gray-400 text-sm">
-                {t('demoInfo')} 
-                <a 
-                  href="https://github.com/vyyka" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-purple-400 hover:text-purple-300 transition-colors duration-300 ml-1 font-medium"
-                >
-                  @vyyka
-                </a>
-              </p>
-            </div>
           </div>
           
         </div>
