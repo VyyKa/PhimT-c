@@ -72,8 +72,9 @@ const MovieDetailPage: React.FC = () => {
           genre: (m.category || []).map((c: any) => c?.name || '').filter(Boolean),
           videoUrl: firstEmbed || '',
           category: (m.category && m.category[0]?.name) || 'Khác',
+          country: (m.country && m.country[0]?.name) || undefined,
           imdbRating: m.tmdb?.vote_average ? parseFloat(m.tmdb.vote_average) : undefined,
-          cast: (m.actor || []).slice(0, 5),
+          cast: (m.actor || []),
           director: Array.isArray(m.director) ? m.director[0] : m.director
         };
         // attach hls url for player if available
@@ -168,7 +169,7 @@ const MovieDetailPage: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="relative min-h-screen xs:h-auto md:h-screen"
+        className="relative min-h-screen xs:h-auto md:h-screen z-0"
       >
         <div className="absolute inset-0">
           <LazyImage

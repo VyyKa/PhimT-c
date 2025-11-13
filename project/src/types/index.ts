@@ -13,6 +13,7 @@ export interface Movie {
   driveUrl?: string;
   isFeatured?: boolean;
   category: string;
+  country?: string;
   cast?: string[];
   director?: string;
   imdbRating?: number;

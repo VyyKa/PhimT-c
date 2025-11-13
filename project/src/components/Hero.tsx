@@ -4,17 +4,18 @@ import { motion } from 'framer-motion';
 import { Play, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { phimapiService } from '../services/phimapiService';
+import LazyImage from './LazyImage';
 
 const Hero: React.FC = () => {
   const [featuredMovies, setFeaturedMovies] = useState<any[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const { t } = useTranslation();
 
-  // Search for specific movies from API with optimization
+  // Lấy phim lẻ mới cập nhật từ API
   useEffect(() => {
     let cancelled = false;
     
-    const searchSpecificMovies = async () => {
+    const fetchRecentMovies = async () => {
       try {
         const transformMovie = (it: any) => ({
           id: it.slug || it._id,
@@ -30,54 +31,25 @@ const Hero: React.FC = () => {
           category: (it.category && it.category[0]?.name) || 'Khác'
         });
 
-        // Parallel search for faster loading with enhanced caching
-        const searchPromises = [
-          // Search for specific movies in parallel with featured cache
-          phimapiService.search({ keyword: 'Exit 8', page: 1, limit: 3 }),
-          phimapiService.search({ keyword: 'F1', page: 1, limit: 3 }),
-          phimapiService.search({ keyword: 'Mất tích', page: 1, limit: 3 }),
-          phimapiService.search({ keyword: 'Thanh gươm diệt quỷ', page: 1, limit: 3 })
-        ];
-
-        // Execute all searches in parallel
-        const results = await Promise.allSettled(searchPromises);
-        const foundMovies: any[] = [];
-
-        // Process results
-        results.forEach((result, index) => {
-          if (result.status === 'fulfilled' && result.value.data?.items?.length > 0) {
-            const movie = transformMovie(result.value.data.items[0]);
-            foundMovies.push(movie);
-          }
+        // Lấy phim lẻ mới cập nhật
+        const recentMovies = await phimapiService.getList('phim-le', { 
+          page: 1, 
+          limit: 4, 
+          sort_field: 'modified.time', 
+          sort_type: 'desc' 
         });
-
-        // If we don't have enough movies, get recent ones as fallback
-        if (foundMovies.length < 2) {
-          try {
-            const recentMovies = await phimapiService.getList('phim-le', { 
-              page: 1, 
-              limit: 4, 
-              sort_field: 'modified.time', 
-              sort_type: 'desc' 
-            });
-            
-            const recentItems = (recentMovies.data?.items || []).slice(0, 4 - foundMovies.length);
-            const recentTransformed = recentItems.map(transformMovie);
-            foundMovies.push(...recentTransformed);
-          } catch (error) {
-            console.log('Không thể lấy phim mới');
-          }
-        }
+        
+        const foundMovies = (recentMovies.data?.items || []).map(transformMovie);
 
         if (!cancelled && foundMovies.length > 0) {
           setFeaturedMovies(foundMovies);
         }
       } catch (error) {
-        console.error('Lỗi khi tìm kiếm phim:', error);
+        console.error('Lỗi khi lấy phim:', error);
       }
     };
 
-    searchSpecificMovies();
+    fetchRecentMovies();
     
     return () => {
       cancelled = true;
@@ -134,19 +106,22 @@ const Hero: React.FC = () => {
       <div className="absolute bottom-40 left-20 w-24 h-24 bg-gradient-to-r from-pink-500/10 to-purple-500/10 rounded-full blur-2xl float-animation" style={{ animationDelay: '1s' }}></div>
 
       {/* Content */}
-      <div className="relative z-10 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-16 max-w-4xl w-full safe-area-left safe-area-right">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
+      <div className="relative z-10 px-4 xs:px-5 sm:px-6 md:px-8 lg:px-16 w-full safe-area-left safe-area-right">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-4 xs:gap-5 sm:gap-6 lg:gap-6 xl:gap-8">
+          {/* Left Content */}
+          <div className="flex-1 max-w-4xl w-full order-2 lg:order-1">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
           {/* Category Badge */}
           <motion.div
             key={`badge-${currentMovie.id}`}
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mb-4"
+            className="mb-3 xs:mb-4"
           >
             <span className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-purple-500/30 rounded-full text-sm font-medium text-purple-300">
               <span className="w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mr-2 animate-pulse"></span>
@@ -160,7 +135,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-3 xs:mb-4 md:mb-6 leading-tight"
+            className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-2 xs:mb-3 sm:mb-4 md:mb-6 leading-tight"
           >
             <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent neon-text">
               {currentMovie?.title || ''}
@@ -173,7 +148,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4 mb-4 xs:mb-5 sm:mb-6 text-xs xs:text-sm text-gray-300"
+            className="flex flex-wrap items-center gap-2 xs:gap-3 sm:gap-4 mb-3 xs:mb-4 sm:mb-5 md:mb-6 text-xs xs:text-sm text-gray-300"
           >
             <span className="flex items-center space-x-1">
               <span className="text-yellow-400">⭐</span>
@@ -195,7 +170,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.9 }}
-            className="flex flex-wrap gap-1 xs:gap-2 mb-4 xs:mb-5 sm:mb-6"
+            className="flex flex-wrap gap-1.5 xs:gap-2 mb-3 xs:mb-4 sm:mb-5 md:mb-6"
           >
             {(currentMovie?.genre || []).slice(0, 3).map((genre: string, index: number) => (
               <span 
@@ -213,7 +188,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-4 xs:mb-5 sm:mb-6 md:mb-8 text-gray-200 leading-relaxed max-w-2xl line-clamp-2 md:line-clamp-3"
+            className="text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-3 xs:mb-4 sm:mb-5 md:mb-8 text-gray-200 leading-relaxed max-w-2xl line-clamp-2 xs:line-clamp-3 md:line-clamp-none"
           >
             {currentMovie?.description || ''}
           </motion.p>
@@ -223,7 +198,7 @@ const Hero: React.FC = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-3 sm:space-x-4"
+            className="flex flex-col xs:flex-row gap-2 xs:gap-3 sm:gap-4"
           >
             <motion.div
               whileHover={{ scale: 1.08, y: -2 }}
@@ -232,10 +207,18 @@ const Hero: React.FC = () => {
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="relative btn-primary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold shadow-2xl group text-xs xs:text-sm md:text-base touch-button overflow-hidden"
+                className="relative btn-primary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold shadow-2xl group text-xs xs:text-sm md:text-base touch-button overflow-hidden rounded-lg"
               >
+                {/* Animated gradient background */}
+                <div 
+                  className="absolute inset-0 animate-gradient rounded-lg"
+                  style={{
+                    background: 'linear-gradient(90deg, #2563eb, #7c3aed, #ec4899, #7c3aed, #2563eb)',
+                  }}
+                ></div>
+                
                 {/* Glow effect background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm rounded-lg"></div>
                 
                 {/* Button content */}
                 <div className="relative z-10 flex items-center space-x-1 xs:space-x-2 md:space-x-3">
@@ -244,7 +227,7 @@ const Hero: React.FC = () => {
                 </div>
                 
                 {/* Shine effect */}
-                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
+                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700 rounded-lg"></div>
               </Link>
             </motion.div>
 
@@ -255,10 +238,10 @@ const Hero: React.FC = () => {
             >
               <Link 
                 to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
-                className="relative btn-secondary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold group text-xs xs:text-sm md:text-base touch-button overflow-hidden border-2 border-white/20 hover:border-white/40 transition-all duration-300"
+                className="relative btn-secondary flex items-center justify-center space-x-1 xs:space-x-2 md:space-x-3 px-4 xs:px-6 md:px-8 py-2.5 xs:py-3 md:py-4 text-white font-semibold group text-xs xs:text-sm md:text-base touch-button overflow-hidden border-2 border-white/20 hover:border-white/40 transition-all duration-300 rounded-lg"
               >
                 {/* Glow effect background */}
-                <div className="absolute inset-0 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-slate-600/50 via-slate-500/50 to-slate-600/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm rounded-lg"></div>
                 
                 {/* Button content */}
                 <div className="relative z-10 flex items-center space-x-1 xs:space-x-2 md:space-x-3">
@@ -267,7 +250,7 @@ const Hero: React.FC = () => {
                 </div>
                 
                 {/* Shine effect */}
-                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700"></div>
+                <div className="absolute inset-0 -top-1 -left-1 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-700 rounded-lg"></div>
               </Link>
             </motion.div>
 
@@ -283,6 +266,58 @@ const Hero: React.FC = () => {
             <p>{t('subtitlesAvailable')}</p>
           </motion.div>
         </motion.div>
+          </div>
+
+          {/* Right Poster - HZPhim Style */}
+          <motion.div
+            key={`poster-${currentMovie.id}`}
+            initial={{ opacity: 0, x: 50, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+            className="flex-shrink-0 w-full lg:w-auto flex justify-center lg:justify-end order-1 lg:order-2 mb-4 xs:mb-5 lg:mb-0"
+          >
+            <Link
+              to={currentMovie ? `/movie/${currentMovie.id}` : '#'}
+              className="group relative block"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05, y: -8 }}
+                transition={{ duration: 0.3 }}
+                className="relative"
+              >
+                {/* Poster Image */}
+                <div className="relative w-32 xs:w-40 sm:w-48 md:w-56 lg:w-64 xl:w-72 aspect-[2/3] rounded-lg xs:rounded-xl overflow-hidden shadow-2xl border-2 border-white/10 group-hover:border-purple-500/50 transition-all duration-300">
+                  <LazyImage
+                    src={currentMovie.image}
+                    alt={currentMovie.title}
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  {/* Glow Effect on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-purple-600/0 to-pink-600/0 group-hover:from-blue-600/20 group-hover:via-purple-600/20 group-hover:to-pink-600/20 transition-all duration-300 blur-xl"></div>
+                  
+                  {/* Play Icon Overlay on Hover */}
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <motion.div
+                      initial={{ scale: 0.8 }}
+                      whileHover={{ scale: 1.1 }}
+                      className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30"
+                    >
+                      <Play className="w-8 h-8 text-white" fill="white" />
+                    </motion.div>
+                  </div>
+                </div>
+                
+                {/* Decorative Elements */}
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+                <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
+              </motion.div>
+            </Link>
+          </motion.div>
+        </div>
       </div>
 
       {/* Bottom gradient with enhanced effect */}
@@ -298,16 +333,16 @@ const Hero: React.FC = () => {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`rounded-full transition-all duration-300 touch-button ${
+              className={`rounded-lg transition-all duration-300 touch-button bg-transparent hover:bg-white/60 border border-white/20 hover:border-white/40 ${
                 index === currentIndex 
-                  ? 'bg-white scale-110' 
-                  : 'bg-white/40 hover:bg-white/60'
+                  ? 'scale-110' 
+                  : ''
               }`}
               style={{
-                width: '4px',
-                height: '4px',
-                minWidth: '4px',
-                minHeight: '4px'
+                width: '6px',
+                height: '20px',
+                minWidth: '6px',
+                minHeight: '20px'
               }}
             />
           ))}

@@ -119,10 +119,10 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('left')}
-              className="absolute -left-1 xs:-left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/30 hover:border-white/60 touch-button perspective-1000"
+              className="absolute -left-1 xs:-left-2 md:-left-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-transparent text-white rounded-full flex items-center justify-center transition-all duration-500 touch-button perspective-1000 border-2 border-white/20 hover:border-white/60 hover:bg-gradient-to-br hover:from-cyan-500 hover:via-blue-600 hover:to-purple-600 shadow-none hover:shadow-2xl opacity-70 hover:opacity-100"
               style={{ 
                 transformStyle: 'preserve-3d',
-                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2)'
+              boxShadow: '0 10px 30px rgba(59, 130, 246, 0), 0 0 40px rgba(139, 92, 246, 0)'
               }}
             >
               <ChevronLeft className="w-4 h-4 xs:w-5 xs:h-5 md:w-7 md:h-7" />
@@ -144,10 +144,10 @@ const MovieRow: React.FC<MovieRowProps> = ({ title, movies, isLarge = false }) =
               }}
               whileTap={{ scale: 0.9 }}
               onClick={() => scroll('right')}
-              className="absolute -right-1 xs:-right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:via-blue-500 hover:to-purple-500 text-white rounded-full flex items-center justify-center transition-all duration-500 shadow-2xl opacity-90 hover:opacity-100 border-2 border-white/30 hover:border-white/60 touch-button perspective-1000"
+              className="absolute -right-1 xs:-right-2 md:-right-6 top-1/2 transform -translate-y-1/2 z-30 w-8 h-8 xs:w-10 xs:h-10 md:w-14 md:h-14 bg-transparent text-white rounded-full flex items-center justify-center transition-all duration-500 touch-button perspective-1000 border-2 border-white/20 hover:border-white/60 hover:bg-gradient-to-br hover:from-cyan-500 hover:via-blue-600 hover:to-purple-600 shadow-none hover:shadow-2xl opacity-70 hover:opacity-100"
               style={{ 
                 transformStyle: 'preserve-3d',
-                boxShadow: '0 10px 30px rgba(59, 130, 246, 0.3), 0 0 40px rgba(139, 92, 246, 0.2)'
+              boxShadow: '0 10px 30px rgba(59, 130, 246, 0), 0 0 40px rgba(139, 92, 246, 0)'
               }}
             >
               <ChevronRight className="w-4 h-4 xs:w-5 xs:h-5 md:w-7 md:h-7" />
