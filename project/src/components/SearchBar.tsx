@@ -36,18 +36,20 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onToggle }) => {
         try {
           const res = await phimapiService.search({ keyword: debouncedQuery, page: 1, limit: 8 });
           const items = res.data?.items || [];
-          const mapped: Movie[] = items.map((it) => ({
-            id: it.slug || it._id,
-            title: it.name,
-            description: '',
-            image: phimapiService.formatImage(it.poster_url || it.thumb_url),
-            year: String(it.year || ''),
-            rating: '',
-            duration: '',
-            genre: (it.category || []).map(c => c.name || '').filter(Boolean),
-            videoUrl: '',
-            category: (it.category && it.category[0]?.name) || 'Khác'
-          }));
+          const mapped: Movie[] = items
+            .filter((it) => it.slug || it._id)
+            .map((it) => ({
+              id: it.slug || it._id || '',
+              title: it.name,
+              description: '',
+              image: phimapiService.formatImage(it.poster_url || it.thumb_url),
+              year: String(it.year || ''),
+              rating: '',
+              duration: '',
+              genre: (it.category || []).map(c => c.name || '').filter(Boolean),
+              videoUrl: '',
+              category: (it.category && it.category[0]?.name) || 'Khác'
+            }));
           setResults(mapped);
         } catch (e) {
           setResults([]);
@@ -97,7 +99,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onToggle }) => {
   };
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative z-[60]">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -105,9 +107,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onToggle }) => {
             animate={{ width: 'auto', opacity: 1 }}
             exit={{ width: 0, opacity: 0 }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="absolute right-0 top-0"
+            className="absolute right-0 top-0 z-[60]"
           >
-            <form onSubmit={handleSubmit} className="flex items-center">
+            <form onSubmit={handleSubmit} className="flex items-center relative z-[60]">
               <div className="relative">
                 <input
                   ref={inputRef}
@@ -115,14 +117,14 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onToggle }) => {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={t('searchPlaceholder')}
-                  className="w-64 md:w-80 px-4 py-2 pl-10 bg-black/80 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 backdrop-blur-sm"
+                  className="w-64 md:w-80 px-4 py-2 pl-10 bg-black/80 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 backdrop-blur-sm relative z-[60]"
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 {query && (
                   <button
                     type="button"
                     onClick={() => setQuery('')}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white z-10"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -137,7 +139,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ isOpen, onToggle }) => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-xl max-h-96 overflow-y-auto z-50"
+                  className="absolute top-full left-0 right-0 mt-2 bg-black/95 backdrop-blur-md border border-purple-500/30 rounded-lg shadow-xl max-h-96 overflow-y-auto z-[70]"
                 >
                   {isLoading ? (
                     <div className="p-4 text-center">
